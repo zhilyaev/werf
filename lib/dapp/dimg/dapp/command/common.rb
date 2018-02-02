@@ -86,7 +86,7 @@ module Dapp
             not_used_images = proc do |*image_id_or_name, log: true|
               images = image_id_or_name.flatten
               filters = images.map { |iion| "--filter=ancestor=#{iion}" }.join(' ')
-              res = shellout!(%(#{host_docker} ps -a -q #{filters})).stdout.strip
+              res = shellout!(p(%(#{host_docker} ps -a -q #{filters}))).stdout.strip
               if res.empty?
                 true
               else
