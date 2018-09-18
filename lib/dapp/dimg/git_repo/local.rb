@@ -11,16 +11,12 @@ module Dapp
 
         def get_ruby2go_state_hash
           super.tap {|res|
+            res["GitDir"] = @path.to_s
+
             p = @path.to_s
             p = File.dirname(@path) if File.basename(@path) == ".git"
-            res["Path"] = p
-            res["OrigPath"] = @path.to_s
+            res["WorkTree"] = p
           }
-        end
-
-        def set_ruby2go_state_hash(state)
-          super(state)
-          @path = state["OrigPath"]
         end
 
         def path=(path)

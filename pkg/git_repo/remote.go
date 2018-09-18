@@ -16,9 +16,8 @@ import (
 
 type Remote struct {
 	Base
-	Url       string
-	ClonePath string // TODO: move CacheVersion & path construction here
-	IsDryRun  bool
+	Url      string
+	IsDryRun bool
 }
 
 func (repo *Remote) withLock(f func() error) error {
@@ -39,7 +38,7 @@ func (repo *Remote) CloneAndFetch() error {
 }
 
 func (repo *Remote) isCloneExists() (bool, error) {
-	_, err := os.Stat(repo.ClonePath)
+	_, err := os.Stat(repo.GitDir)
 	if err == nil {
 		return true, nil
 	}
@@ -89,12 +88,12 @@ func (repo *Remote) Clone() (bool, error) {
 
 		defer os.RemoveAll(path)
 
-		err = os.MkdirAll(filepath.Dir(repo.ClonePath), 0755)
+		err = os.MkdirAll(filepath.Dir(repo.GitDir), 0755)
 		if err != nil {
 			return err
 		}
 
-		err = os.Rename(path, repo.ClonePath)
+		err = os.Rename(path, repo.GitDir)
 		if err != nil {
 			return err
 		}
@@ -110,7 +109,7 @@ func (repo *Remote) Fetch() error {
 		return nil
 	}
 
-	cfgPath := filepath.Join(repo.ClonePath, "config")
+	cfgPath := filepath.Join(repo.GitDir, "config")
 
 	cfg, err := ini.Load(cfgPath)
 	if err != nil {
@@ -129,7 +128,7 @@ func (repo *Remote) Fetch() error {
 	}
 
 	return repo.withLock(func() error {
-		rawRepo, err := go_git.PlainOpen(repo.ClonePath)
+		rawRepo, err := go_git.PlainOpen(repo.GitDir)
 		if err != nil {
 			return fmt.Errorf("cannot open repo: %s", err)
 		}
@@ -163,7 +162,7 @@ func (repo *Remote) HeadCommit() (string, error) {
 }
 
 func (repo *Remote) HeadBranchName() (string, error) {
-	return repo.getHeadBranchNameForRepo(repo.ClonePath)
+	return repo.getHeadBranchNameForRepo(repo.GitDir)
 }
 
 func (repo *Remote) findReference(rawRepo *go_git.Repository, reference string) (string, error) {
@@ -192,7 +191,7 @@ func (repo *Remote) findReference(rawRepo *go_git.Repository, reference string) 
 func (repo *Remote) LatestBranchCommit(branch string) (string, error) {
 	var err error
 
-	rawRepo, err := go_git.PlainOpen(repo.ClonePath)
+	rawRepo, err := go_git.PlainOpen(repo.GitDir)
 	if err != nil {
 		return "", fmt.Errorf("cannot open repo: %s", err)
 	}
@@ -213,7 +212,7 @@ func (repo *Remote) LatestBranchCommit(branch string) (string, error) {
 func (repo *Remote) LatestTagCommit(tag string) (string, error) {
 	var err error
 
-	rawRepo, err := go_git.PlainOpen(repo.ClonePath)
+	rawRepo, err := go_git.PlainOpen(repo.GitDir)
 	if err != nil {
 		return "", fmt.Errorf("cannot open repo: %s", err)
 	}
@@ -232,9 +231,9 @@ func (repo *Remote) LatestTagCommit(tag string) (string, error) {
 }
 
 func (repo *Remote) CreatePatch(opts PatchOptions) (Patch, error) {
-	return repo.createPatch(repo.ClonePath, opts)
+	return repo.createPatch(repo.GitDir, opts)
 }
 
 func (repo *Remote) CreateArchive(opts ArchiveOptions) (Archive, error) {
-	return repo.createArchive(repo.ClonePath, opts)
+	return repo.createArchive(repo.GitDir, opts)
 }

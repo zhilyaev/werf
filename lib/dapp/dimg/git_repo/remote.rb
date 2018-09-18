@@ -35,7 +35,7 @@ module Dapp
         def get_ruby2go_state_hash
           super.tap {|res|
             res["Url"] = @url.to_s
-            res["ClonePath"] = dapp.build_path("remote_git_repo", CACHE_VERSION.to_s, dapp.consistent_uniq_slugify(name), remote_origin_url_protocol).to_s # FIXME
+            res["GitDir"] = dapp.build_path("remote_git_repo", CACHE_VERSION.to_s, dapp.consistent_uniq_slugify(name), remote_origin_url_protocol).to_s # FIXME
             res["IsDryRun"] = dapp.dry_run?
           }
         end
