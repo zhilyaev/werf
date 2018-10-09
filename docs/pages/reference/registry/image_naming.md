@@ -2,6 +2,7 @@
 title: Image naming
 sidebar: reference
 permalink: reference/registry/image_naming.html
+author: Artem Kladov <artem.kladov@flant.com>
 ---
 
 Dapp builds docker images and names them to run or push in a registry. To name images dapp has a `REPO` and images tag parameters (`--tag-*`) in the following commands:
