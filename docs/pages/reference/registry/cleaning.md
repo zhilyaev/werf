@@ -25,7 +25,7 @@ author: Artem Kladov <artem.kladov@flant.com>
 
 Набор связанных с dapp приложением образов в registry состоит из:
 
-* Конечных образов приложений, о схеме их именования см подробнее в разделе [registry]({{ site.baseurl }}/reference/registry/push_and_pull.html).
+* Конечных образов приложений, о схеме их именования см подробнее в разделе [registry]({{ site.baseurl }}/reference/registry/image_naming.html).
   * При этом на сборочной машине такие образы не создаются, т.к. не нужны.
 * Образов сборочного кэша, связанных с конечными образами приложений.
 
