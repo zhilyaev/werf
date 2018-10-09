@@ -2,6 +2,7 @@
 title: Authorization
 sidebar: reference
 permalink: reference/registry/authorization.html
+author: Timofey Kirillov <timofey.kirillov@flant.com>
 ---
 
 There are several categories of commands that work with docker registry, thus need to authorize in docker registry:
