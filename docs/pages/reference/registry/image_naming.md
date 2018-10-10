@@ -25,13 +25,13 @@ E.g., if there is unnamed dimg in a dappfile and `REPO` is `registry.flant.com/s
 
 ### Minikube docker registry
 
-`dapp kube minikube setup` command used to prepare kubernetes environment with docker registry running in minikube, see [article]({{ site.baseurl }}/reference/deploy/minikube.html#dapp-kube-minikube-setup) for details. To specify this docker registry address in `REPO` parameter dapp supports a shortcut value `:minikube`.
+`dapp kube minikube setup` command is used to prepare kubernetes environment with docker registry running in minikube, see [article]({{ site.baseurl }}/reference/deploy/minikube.html#dapp-kube-minikube-setup) for details. To specify this docker registry address in `REPO` parameter dapp supports a shortcut value `:minikube`.
 
 `:minikube` value of `REPO` parameter automatically unfolds into `localhost:5000/<dapp-name>` (more about [dapp name](https://flant.github.io/dapp/reference/glossary.html#dapp-name)).
 
 ## Image tag parameters
 
-In a Docker world, a tag is a creating an alias for existent docker image. In Dapp world tagging creates **a new image layer** with the specified name. In this image layer labels dapp stores internal service information about tagging schema. This information is referred to as image **meta-information**. Dapp uses this internal information from images in [deploying]({{ site.baseurl }}/reference/deploy/deployment_to_kubernetes.html#dapp-kube-deploy) and [cleaning]({{ site.baseurl }}/reference/registry/cleaning.html) processes.
+In a Docker world, a tag is a creating an alias for existent docker image. In Dapp world tagging creates **a new image layer** with the specified name. In this image layer labels, dapp stores internal service information about tagging schema. This information is referred to as image **meta-information**. Dapp uses this information in [deploying]({{ site.baseurl }}/reference/deploy/deployment_to_kubernetes.html#dapp-kube-deploy) and [cleaning]({{ site.baseurl }}/reference/registry/cleaning.html) processes.
 
 ### --tag-ci
 
@@ -53,13 +53,13 @@ Option `--tag-ci` is the most recommended way for building in CI.
 
 ### --tag-build-id
 
-Tag works only in GitLab environment.
+Tag works only in GitLab CI or Travis CI environment.
 
-The tag name based on the unique id of the current GitLab job from `CI_JOB_ID` environment variable.
+The tag name based on the unique id of the current GitLab job from `CI_BUILD_ID` or `CI_JOB_ID` environment variable for Gitlab CI or `TRAVIS_BUILD_NUMBER` environment variable for Travis CI.
 
 ### --tag-branch
 
-The tag name based on a current git branch. Dapp looks for the current commit id in the local git repository where dappfile located.
+The tag name based on a current git branch. Dapp looks for the current branch in the local git repository where dappfile located.
 
 After getting git branch name, dapp apply [slug](#slug) transformation rules if tag name doesn't meet with the slug requirements. This behavior allows using branches with arbitrary names like `my/second_patch`.
 
@@ -83,7 +83,7 @@ Dapp doesn't apply [slug](#slug) transformation rules to TAG, even though it con
 
 ### Default values
 
-By default, dapp use `latest` as a docker tag for all images of dappfile.
+By default, dapp uses `latest` as a docker tag for all images of dappfile.
 
 ### Combining parameters
 
@@ -154,9 +154,9 @@ For `--tag` parameter image names are converting, but for `--tag-ci` parameter i
 
 In some cases, text from environment variables or parameters can't be used AS IS because it can contain unacceptable symbols.
 
-To take into account restrictions for docker images names, helm releases names and kubernetes namespaces dapp applies unified slug algorithm when producing these names. This algorithm excludes unacceptable symbols from an arbitrary text and guaranties the uniqueness of the result for each unique input.
+To take into account restrictions for docker images names, helm releases names and kubernetes namespaces dapp applies unified slug algorithm when producing these names. This algorithm excludes unacceptable symbols from an arbitrary text and guarantees the uniqueness of the result for each unique input.
 
-Dapp applies slug algorithm internally for names such as [dapp name], docker tags names, helm releases names and kubernetes namespaces. Also there is a `dapp slug` command (see syntax below) which applies this algorithm for provided input text, you can use this command upon your needs.
+Dapp applies slug algorithm internally for names such as [dapp name], docker tags names, helm releases names and kubernetes namespaces. Also, there is a `dapp slug` command (see syntax below) which applies this algorithm for provided input text. You can use this command upon your needs.
 
 ### Algorithm
 
@@ -182,7 +182,7 @@ This algorithm has additional requirement for input text:
 
 * it should contain no more than 53 byte chars.
 
-If this requirement does not met, then dapp will transform input text and add hash as described earlier. The result will be guaranteed to fit 53 byte chars.
+If this requirement does not meet, then dapp transforms input text and adds hash as described earlier. The result fits in 53 byte chars.
 
 ### Syntax
 
