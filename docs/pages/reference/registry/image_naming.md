@@ -35,13 +35,17 @@ In a Docker world, a tag is a creating an alias for existent docker image. In Da
 
 ### --tag-ci
 
-Tag works only in GitLab environment. 
+Tag works only in GitLab CI or Travis CI environment.
 
-The [docker tag](https://docs.docker.com/glossary/?term=tag) name is based on a GitLab CI variable `CI_COMMIT_TAG`  or `CI_COMMIT_REF_NAME`.
+The [docker tag](https://docs.docker.com/glossary/?term=tag) name is based on a current git-tag or git-branch, for which CI job is run.
 
-The `CI_COMMIT_TAG` environment variable presents only when building git tag. In this case, dapp creates an image and marks it as a built image for git tag (by adding **meta-information** into newly created docker layer).
+Dapp determines git tag name based on `CI_COMMIT_TAG` environment variable for Gitlab CI or `TRAVIS_TAG` environment variable for Travis CI. This environment variable will be referred to as **git tag variable**.
 
-If the `CI_COMMIT_TAG` environment variable is absent, then dapp uses the `CI_COMMIT_REF_NAME` environment variable to get the name of building git branch. In this case, dapp creates an image and marks it as a built image for git branch (by adding **meta-information** into newly created docker layer).
+Dapp determines git branch name based on `CI_COMMIT_REF_NAME` environment variable for Gitlab CI or `TRAVIS_BRANCH` environment variable for Travis CI. This environment variable will be referred to as **git branch variable**.
+
+The **git tag variable** presents only when building git tag. In this case, dapp creates an image and marks it as a built image for git tag (by adding **meta-information** into newly created docker layer).
+
+If the **git tag variable** is absent, then dapp uses the **git branch variable** to get the name of building git branch. In this case, dapp creates an image and marks it as a built image for git branch (by adding **meta-information** into newly created docker layer).
 
 After getting git tag or git branch name, dapp applies [slug](#slug) transformation rules if this name doesn't meet with the slug requirements. This behavior allows using tags and branches with arbitrary names in Gitlab like `review/fix#23`.
 
