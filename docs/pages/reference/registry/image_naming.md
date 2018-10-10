@@ -170,6 +170,16 @@ The following steps perform, when dapp apply transformations of the text in slug
 * Removing starting and ending dashes;
 * Reducing multiple dashes sequences to one dash.
 
+#### Version 3
+
+Dapp has experimental additions to basic slug algorithm, which is non-default for now. To enable **version 3** algorithm set `DAPP_SLUG_V3=1` environment variable.
+
+This algorithm has additional requirement for input text:
+
+* it should contain no more than 53 byte chars.
+
+If this requirement does not met, then dapp will transform input text and add hash as described earlier. The result will be guaranteed to fit 53 byte chars.
+
 ### Syntax
 
 ```bash
