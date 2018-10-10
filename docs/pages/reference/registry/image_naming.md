@@ -148,9 +148,11 @@ For `--tag` parameter image names are converting, but for `--tag-ci` parameter i
 
 ## Slug
 
-In some cases, text from environment variables or parameters can't be used AS IS because it can contain unacceptable symbols. E.g., git branch name needs to contain only acceptable symbols (see more [here](https://git-scm.com/docs/git-check-ref-format)) and so on. For excluding unacceptable symbols from a text, getting text unique and more human-readable dapp has the `slug` command.
+In some cases, text from environment variables or parameters can't be used AS IS because it can contain unacceptable symbols.
 
-Dapp uses the `slug` command in image tagging and deployment process. You can also use `dapp slug` command (see syntax below) upon your needs.
+To take into account restrictions for docker images names, helm releases names and kubernetes namespaces dapp applies unified slug algorithm when producing these names. This algorithm excludes unacceptable symbols from an arbitrary text and guaranties the uniqueness of the result for each unique input.
+
+Dapp applies slug algorithm internally for names such as [dapp name], docker tags names, helm releases names and kubernetes namespaces. Also there is a `dapp slug` command (see syntax below) which applies this algorithm for provided input text, you can use this command upon your needs.
 
 ### Algorithm
 
