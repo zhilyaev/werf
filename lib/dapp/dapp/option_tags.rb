@@ -60,7 +60,7 @@ module Dapp
         return {} unless options[:tag_build_id]
 
         if ENV['GITLAB_CI']
-          build_id = ENV['CI_BUILD_ID']
+          build_id = ENV['CI_BUILD_ID'] || ENV['CI_JOB_ID']
         elsif ENV['TRAVIS']
           build_id = ENV['TRAVIS_BUILD_NUMBER']
         else
