@@ -23,6 +23,12 @@ E.g., if there is unnamed dimg in a dappfile and `REPO` is `registry.flant.com/s
 * `registry.flant.com/sys/backend/server` for `server` dimg;
 * `registry.flant.com/sys/backend/worker` for `worker` dimg.
 
+### Minikube docker registry
+
+`dapp kube minikube setup` command used to prepare kubernetes environment with docker registry running in minikube, see [article]({{ site.baseurl }}/reference/deploy/minikube.html#dapp-kube-minikube-setup) for details. To specify this docker registry address in `REPO` parameter dapp supports a shortcut value `:minikube`.
+
+`:minikube` value of `REPO` parameter automatically unfolds into `localhost:5000/<dapp-name>` (more about [dapp name](https://flant.github.io/dapp/reference/glossary.html#dapp-name)).
+
 ## Image tag parameters
 
 In a Docker world, a tag is a creating an alias for existent docker image. In Dapp world tagging creates **a new image layer** with the specified name. In this image layer labels dapp stores internal service information about tagging schema. This information is referred to as image **meta-information**. Dapp uses this internal information from images in [deploying]({{ site.baseurl }}/reference/deploy/deployment_to_kubernetes.html#dapp-kube-deploy) and [cleaning]({{ site.baseurl }}/reference/registry/cleaning.html) processes.
