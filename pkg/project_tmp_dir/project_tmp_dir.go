@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"time"
 
@@ -58,6 +59,13 @@ func Get() (string, error) {
 		}
 	}
 
+	if runtime.GOOS == "darwin" {
+		dir, err = filepath.EvalSymlinks(dir)
+		if err != nil {
+			return "", fmt.Errorf("eval symlink failed: %s", err)
+		}
+	}
+
 	return dir, nil
 }
 
@@ -81,8 +89,8 @@ func GC() error {
 		}
 	}
 
-	tmpDirsToRemove := []string{}
-	filesToUnlink := []string{}
+	var tmpDirsToRemove []string
+	var filesToUnlink []string
 
 	for _, dirInfo := range releasedDirs {
 		link := filepath.Join(GetReleasedTmpDirs(), dirInfo.Name())
