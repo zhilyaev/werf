@@ -134,7 +134,7 @@ func (p *BuildStagesPhase) runImage(image *Image, c *Conveyor) error {
 				return fmt.Errorf("stage '%s' preRunHook failed: %s", s.Name(), err)
 			}
 
-			if err := logger.WithTag(image.LogTagName(), func() error {
+			if err := logger.WithTag(fmt.Sprintf("%s/%s", image.LogName(), s.Name()), func() error {
 				if err := img.Build(p.ImageBuildOptions); err != nil {
 					return fmt.Errorf("failed to build %s: %s", img.Name(), err)
 				}
