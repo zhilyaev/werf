@@ -39,11 +39,9 @@ func (p *BuildStagesPhase) run(c *Conveyor) error {
 
 	images := c.imagesInOrder
 	for _, image := range images {
-		err := logger.WithTag(image.LogTagName(), func() error {
+		if err := logger.LogServiceProcess(image.LogName(), logger.LogProcessOptions{}, func() error {
 			return p.runImage(image, c)
-		})
-
-		if err != nil {
+		}); err != nil {
 			return err
 		}
 	}
@@ -136,8 +134,14 @@ func (p *BuildStagesPhase) runImage(image *Image, c *Conveyor) error {
 				return fmt.Errorf("stage '%s' preRunHook failed: %s", s.Name(), err)
 			}
 
-			if err := img.Build(p.ImageBuildOptions); err != nil {
-				return fmt.Errorf("failed to build %s: %s", img.Name(), err)
+			if err := logger.WithTag(image.LogTagName(), func() error {
+				if err := img.Build(p.ImageBuildOptions); err != nil {
+					return fmt.Errorf("failed to build %s: %s", img.Name(), err)
+				}
+
+				return nil
+			}); err != nil {
+				return err
 			}
 
 			if err := img.SaveInCache(); err != nil {

@@ -27,13 +27,9 @@ func (p *PrepareStagesPhase) run(c *Conveyor) (err error) {
 	}
 
 	for _, image := range c.imagesInOrder {
-		err := logger.WithTag(image.LogTagName(), func() error {
+		if err := logger.LogServiceProcess(image.LogName(), logger.LogProcessOptions{}, func() error {
 			return p.runImage(image, c)
-		})
-
-		logger.LogOptionalLn()
-
-		if err != nil {
+		}); err != nil {
 			return err
 		}
 	}

@@ -4,7 +4,6 @@ import "strings"
 
 var (
 	colorlessTag   = ""
-	tagWidth       = 20
 	tagIndentWidth = 2
 )
 
@@ -22,27 +21,19 @@ func SetTag(value string) {
 }
 
 func formattedTag() string {
-	var fittedTag string
-
 	if len(colorlessTag) == 0 {
 		return ""
-	} else if len(colorlessTag) > tagWidth {
-		longTagPostfix := " ..."
-		fittedTag = colorlessTag[:tagWidth-len(longTagPostfix)] + longTagPostfix
-	} else {
-		fittedTag = colorlessTag
 	}
 
-	padLeft := strings.Repeat(" ", tagWidth-len(fittedTag))
-	colorizedTag := colorize(fittedTag, tagFormat...)
+	colorizedTag := colorize(colorlessTag, tagFormat...)
 
-	return strings.Join([]string{padLeft, colorizedTag, strings.Repeat(" ", tagIndentWidth)}, "")
+	return strings.Join([]string{colorizedTag, strings.Repeat(" ", tagIndentWidth)}, "")
 }
 
 func tagBlockWidth() int {
 	if len(colorlessTag) == 0 {
 		return 0
 	} else {
-		return tagWidth + tagIndentWidth
+		return len(formattedTag()) + tagIndentWidth
 	}
 }

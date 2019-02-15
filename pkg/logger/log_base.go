@@ -52,8 +52,8 @@ func loggerCursorOnStartingPositionCaretRuneHook() string {
 	var result string
 
 	if isLoggerCursorOnStartingPosition {
-		result += formattedTag()
 		result += formattedProcessBorders()
+		result += formattedTag()
 	}
 
 	isLoggerCursorOnStartingPosition = true
@@ -65,8 +65,8 @@ func loggerCursorOnStartingPositionDefaultHook() string {
 	var result string
 
 	if isLoggerCursorOnStartingPosition {
-		result += formattedTag()
 		result += formattedProcessBorders()
+		result += formattedTag()
 		result += strings.Repeat(" ", indentWidth)
 		isLoggerCursorOnStartingPosition = false
 	}
@@ -79,8 +79,8 @@ func loggerOptionalLnModeDefaultHook() string {
 
 	if isLoggerOptionalLnModeOn {
 		if isLoggerOptionalLnModeTag == colorlessTag {
-			result += formattedTag()
 			result += formattedProcessBorders()
+			result += formattedTag()
 		}
 
 		result += "\n"

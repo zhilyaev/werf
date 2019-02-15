@@ -46,7 +46,7 @@ func generateImagesInOrder(imageConfigs []*config.Image, c *Conveyor) ([]*Image,
 	imagesInterfaceConfigs := getImageConfigsInOrder(imageConfigs, c)
 	for _, imageInterfaceConfig := range imagesInterfaceConfigs {
 		imageName := ImageLogTagName(imageInterfaceConfig.ImageBaseConfig().Name, imageInterfaceConfig.IsArtifact())
-		err := logger.WithTag(imageName, func() error {
+		err := logger.LogServiceProcess(imageName, logger.LogProcessOptions{}, func() error {
 			image, err := generateImage(imageInterfaceConfig, c)
 			if err != nil {
 				return err
@@ -56,8 +56,6 @@ func generateImagesInOrder(imageConfigs []*config.Image, c *Conveyor) ([]*Image,
 
 			return nil
 		})
-
-		logger.LogOptionalLn()
 
 		if err != nil {
 			return nil, err
