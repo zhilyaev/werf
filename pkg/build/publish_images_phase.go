@@ -30,7 +30,7 @@ type PublishImagesPhase struct {
 }
 
 func (p *PublishImagesPhase) Run(c *Conveyor) error {
-	return logger.LogServiceProcess("Pushing images", logger.LogProcessOptions{WithoutBorder: true}, func() error {
+	return logger.LogServiceProcess("Pushing images", logger.LogProcessOptions{}, func() error {
 		return p.run(c)
 	})
 }
@@ -39,7 +39,7 @@ func (p *PublishImagesPhase) run(c *Conveyor) error {
 	// TODO: Push stages should occur on the BuildStagesPhase
 
 	for _, image := range c.imagesInOrder {
-		if err := logger.LogServiceProcess(image.LogName(), logger.LogProcessOptions{}, func() error {
+		if err := logger.LogServiceProcess(image.LogProcessName(), logger.LogProcessOptions{ColorizeMsgFunc: image.LogProcessColorizeFunc()}, func() error {
 			if p.WithStages {
 				err := logger.LogServiceProcess("Pushing stages cache", logger.LogProcessOptions{}, func() error {
 					if err := p.pushImageStages(c, image); err != nil {

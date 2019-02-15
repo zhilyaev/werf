@@ -24,14 +24,14 @@ func NewSignaturesPhase() *SignaturesPhase {
 type SignaturesPhase struct{}
 
 func (p *SignaturesPhase) Run(c *Conveyor) error {
-	return logger.LogServiceProcess("Calculating signatures", logger.LogProcessOptions{WithoutBorder: true}, func() error {
+	return logger.LogServiceProcess("Calculating signatures", logger.LogProcessOptions{}, func() error {
 		return logger.WithoutIndent(func() error { return p.run(c) })
 	})
 }
 
 func (p *SignaturesPhase) run(c *Conveyor) error {
 	for _, image := range c.imagesInOrder {
-		if err := logger.LogServiceProcess(image.LogName(), logger.LogProcessOptions{}, func() error {
+		if err := logger.LogServiceProcess(image.LogProcessName(), logger.LogProcessOptions{ColorizeMsgFunc: image.LogProcessColorizeFunc()}, func() error {
 			return p.calculateImageSignatures(c, image)
 		}); err != nil {
 			return err

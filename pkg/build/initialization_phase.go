@@ -24,7 +24,7 @@ func NewInitializationPhase() *InitializationPhase {
 }
 
 func (p *InitializationPhase) Run(c *Conveyor) (err error) {
-	return logger.LogServiceProcess("Determining of stages", logger.LogProcessOptions{WithoutBorder: true}, func() error {
+	return logger.LogServiceProcess("Determining of stages", logger.LogProcessOptions{}, func() error {
 		return p.run(c)
 	})
 }
@@ -45,8 +45,8 @@ func generateImagesInOrder(imageConfigs []*config.Image, c *Conveyor) ([]*Image,
 
 	imagesInterfaceConfigs := getImageConfigsInOrder(imageConfigs, c)
 	for _, imageInterfaceConfig := range imagesInterfaceConfigs {
-		imageName := ImageLogTagName(imageInterfaceConfig.ImageBaseConfig().Name, imageInterfaceConfig.IsArtifact())
-		err := logger.LogServiceProcess(imageName, logger.LogProcessOptions{}, func() error {
+		imageName := ImageLogProcessName(imageInterfaceConfig.ImageBaseConfig().Name, imageInterfaceConfig.IsArtifact())
+		err := logger.LogServiceProcess(imageName, logger.LogProcessOptions{ColorizeMsgFunc: ImageLogProcessColorizeFunc(imageInterfaceConfig.IsArtifact())}, func() error {
 			image, err := generateImage(imageInterfaceConfig, c)
 			if err != nil {
 				return err

@@ -22,7 +22,7 @@ func (p WriterProxy) Write(data []byte) (int, error) {
 		return logF(p.Writer, "%s", string(data))
 	}
 
-	_, err := FormattedLogF(p.Writer, "%s", string(data))
+	_, err := FormattedLogF(p.Writer, "%s", FitTextWithIndentWithWidthMaxLimit(string(data), 0, TerminalWidth()))
 	return len(data), err
 }
 

@@ -27,7 +27,7 @@ func (p *BuildStagesPhase) Run(c *Conveyor) (err error) {
 		fmt.Printf("BuildStagesPhase.Run\n")
 	}
 
-	return logger.LogServiceProcess("Building stages", logger.LogProcessOptions{WithoutBorder: true}, func() error {
+	return logger.LogServiceProcess("Building stages", logger.LogProcessOptions{}, func() error {
 		return p.run(c)
 	})
 }
@@ -39,7 +39,7 @@ func (p *BuildStagesPhase) run(c *Conveyor) error {
 
 	images := c.imagesInOrder
 	for _, image := range images {
-		if err := logger.LogServiceProcess(image.LogName(), logger.LogProcessOptions{}, func() error {
+		if err := logger.LogServiceProcess(image.LogProcessName(), logger.LogProcessOptions{ColorizeMsgFunc: image.LogProcessColorizeFunc()}, func() error {
 			return p.runImage(image, c)
 		}); err != nil {
 			return err
@@ -134,7 +134,7 @@ func (p *BuildStagesPhase) runImage(image *Image, c *Conveyor) error {
 				return fmt.Errorf("stage '%s' preRunHook failed: %s", s.Name(), err)
 			}
 
-			if err := logger.WithTag(fmt.Sprintf("%s/%s", image.LogName(), s.Name()), func() error {
+			if err := logger.WithTag(fmt.Sprintf("%s/%s", image.LogName(), s.Name()), image.LogTagColorizeFunc(), func() error {
 				if err := img.Build(p.ImageBuildOptions); err != nil {
 					return fmt.Errorf("failed to build %s: %s", img.Name(), err)
 				}

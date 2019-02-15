@@ -1,23 +1,28 @@
 package logger
 
-import "strings"
-
-var (
-	colorlessTag   = ""
-	tagIndentWidth = 2
+import (
+	"fmt"
+	"strings"
 )
 
-func WithTag(value string, f func() error) error {
-	savedTag := colorlessTag
-	colorlessTag = value
-	err := f()
-	colorlessTag = savedTag
+var (
+	colorlessTag    = ""
+	tagIndentWidth  = 2
+	tagColorizeFunc = func(a ...interface{}) string { return fmt.Sprint(a...) }
+)
 
+func WithTag(value string, colorizeFunc func(...interface{}) string, f func() error) error {
+	savedTag := colorlessTag
+	savedColorizeFunc := tagColorizeFunc
+	SetTag(value, colorizeFunc)
+	err := f()
+	SetTag(savedTag, savedColorizeFunc)
 	return err
 }
 
-func SetTag(value string) {
+func SetTag(value string, colorizeFunc func(...interface{}) string) {
 	colorlessTag = value
+	tagColorizeFunc = colorizeFunc
 }
 
 func formattedTag() string {
@@ -25,7 +30,7 @@ func formattedTag() string {
 		return ""
 	}
 
-	colorizedTag := colorize(colorlessTag, tagFormat...)
+	colorizedTag := tagColorizeFunc(colorlessTag)
 
 	return strings.Join([]string{colorizedTag, strings.Repeat(" ", tagIndentWidth)}, "")
 }
@@ -34,6 +39,6 @@ func tagBlockWidth() int {
 	if len(colorlessTag) == 0 {
 		return 0
 	} else {
-		return len(formattedTag()) + tagIndentWidth
+		return len(colorlessTag) + tagIndentWidth
 	}
 }

@@ -9,7 +9,7 @@ import (
 const (
 	logProcessSuccessStatus          = "[OK]"
 	logProcessFailedStatus           = "[FAILED]"
-	logProcessTimeFormat             = "%5.2f sec "
+	logProcessTimeFormat             = "%.2f sec"
 	logProcessInlineProcessMsgFormat = "%s ..."
 
 	logStateRightPartsSeparator = " "
@@ -71,13 +71,18 @@ func logProcessInlineBase(processMsg string, processFunc func() error, colorizeP
 
 type LogProcessOptions struct {
 	WithIndent           bool
-	WithoutBorder        bool
 	WithoutLogOptionalLn bool
 	InfoSectionFunc      func(err error)
+	InfoHeader           string
+	ColorizeMsgFunc      func(...interface{}) string
 }
 
 func logProcessBase(msg string, options LogProcessOptions, processFunc func() error, colorizeMsgFunc func(string) string) error {
 	processOptionalLnMode()
+
+	if options.ColorizeMsgFunc != nil {
+		colorizeMsgFunc = func(msg string) string { return options.ColorizeMsgFunc(msg) }
+	}
 
 	headerFunc := func() error {
 		logStateOptions := logStateOptions{IgnoreIndent: true}
@@ -85,9 +90,7 @@ func logProcessBase(msg string, options LogProcessOptions, processFunc func() er
 		return nil
 	}
 
-	if !options.WithoutBorder {
-		headerFunc = decorateByWithExtraProcessBorder("┌", colorizeMsgFunc, headerFunc)
-	}
+	headerFunc = decorateByWithExtraProcessBorder("┌", colorizeMsgFunc, headerFunc)
 
 	_ = headerFunc()
 
@@ -102,16 +105,19 @@ func logProcessBase(msg string, options LogProcessOptions, processFunc func() er
 		bodyFunc = decorateByWithIndent(bodyFunc)
 	}
 
-	if !options.WithoutBorder {
-		bodyFunc = decorateByWithExtraProcessBorder("│", colorizeMsgFunc, bodyFunc)
-	}
+	bodyFunc = decorateByWithExtraProcessBorder("│", colorizeMsgFunc, bodyFunc)
 
 	err := bodyFunc()
 
 	resetOptionalLnMode()
 
 	if options.InfoSectionFunc != nil {
-		loggerFormattedLogLn(outStream, colorizeMsgFunc(fmt.Sprintf("├ %s (info)", msg)))
+		infoHeader := "Info"
+		if options.InfoHeader != "" {
+			infoHeader = options.InfoHeader
+		}
+
+		loggerFormattedLogLn(outStream, colorizeMsgFunc(fmt.Sprintf("├ %s", infoHeader)))
 		_ = decorateByWithExtraProcessBorder("│", colorizeMsgFunc, func() error {
 			options.InfoSectionFunc(err)
 			return nil
@@ -124,18 +130,18 @@ func logProcessBase(msg string, options LogProcessOptions, processFunc func() er
 		resultStatus = logProcessFailedStatus
 
 		footerFunc := func() error {
-			logStateOptions := logStateOptions{
-				State:        resultStatus,
-				Time:         elapsedSeconds,
-				IgnoreIndent: true,
-			}
-			logStateBase(msg, logStateOptions, colorizeFail, colorizeFail)
+			_ = WithoutIndent(func() error {
+				colorizedMsg := prepareLogStateLeftPart(msg, resultStatus, elapsedSeconds, colorizeFail)
+				colorizedMsg += colorizeFail(resultStatus) + " " + colorizeFail(elapsedSeconds)
+				loggerFormattedLogLn(outStream, colorizedMsg)
+
+				return nil
+			})
+
 			return nil
 		}
 
-		if !options.WithoutBorder {
-			footerFunc = decorateByWithExtraProcessBorder("└", colorizeMsgFunc, footerFunc)
-		}
+		footerFunc = decorateByWithExtraProcessBorder("└", colorizeMsgFunc, footerFunc)
 
 		_ = footerFunc()
 
@@ -147,18 +153,18 @@ func logProcessBase(msg string, options LogProcessOptions, processFunc func() er
 	}
 
 	footerFunc := func() error {
-		logStateOptions := logStateOptions{
-			State:        resultStatus,
-			Time:         elapsedSeconds,
-			IgnoreIndent: true,
-		}
-		logStateBase(msg, logStateOptions, colorizeMsgFunc, colorizeSuccess)
+		_ = WithoutIndent(func() error {
+			colorizedMsg := prepareLogStateLeftPart(msg, resultStatus, elapsedSeconds, colorizeMsgFunc)
+			colorizedMsg += " " + colorizeSuccess(elapsedSeconds) + " " + colorizeSuccess(resultStatus)
+			loggerFormattedLogLn(outStream, colorizedMsg)
+
+			return nil
+		})
+
 		return nil
 	}
 
-	if !options.WithoutBorder {
-		footerFunc = decorateByWithExtraProcessBorder("└", colorizeMsgFunc, footerFunc)
-	}
+	footerFunc = decorateByWithExtraProcessBorder("└", colorizeMsgFunc, footerFunc)
 
 	_ = footerFunc()
 
@@ -199,6 +205,7 @@ func logStateBase(msg string, options logStateOptions, colorizeLeftPartFunc, col
 func prepareLogStateLeftPart(msg, state, time string, colorizeFunc func(string) string) string {
 	var result string
 
+	//spaceLength := availableTerminalLineSpace(logStateSeparatorBetweenParts, state, timeOrStub(time))
 	spaceLength := availableTerminalLineSpace(state, timeOrStub(time))
 	if spaceLength > 0 {
 		if spaceLength > len(msg) {
@@ -212,6 +219,15 @@ func prepareLogStateLeftPart(msg, state, time string, colorizeFunc func(string) 
 
 	return colorizeFunc(result)
 }
+
+//func prepareLogStateRightPart(msg, state, time string, colorizeFunc func(string) string) string {
+//	var rightPart []string
+//	rightPart = append(rightPart, logStateSeparatorBetweenParts)
+//	rightPart = append(rightPart, colorizeFunc(state))
+//	rightPart = append(rightPart, colorizeFunc(time))
+//
+//	return strings.Join(rightPart, logStateRightPartsSeparator)
+//}
 
 func prepareLogStateRightPart(msg, state, time string, colorizeFunc func(string) string) string {
 	var result string

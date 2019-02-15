@@ -10,15 +10,14 @@ import (
 )
 
 var (
-	highlightFormat = []color.Attribute{color.FgYellow, color.Bold}
+	//highlightFormat = []color.Attribute{color.FgYellow, color.Bold}
 	serviceFormat   = []color.Attribute{color.Bold}
+	highlightFormat = serviceFormat
 	infoFormat      = []color.Attribute{color.FgHiBlue}
 	warningFormat   = []color.Attribute{color.FgRed, color.Bold}
 
 	failFormat    = warningFormat
 	successFormat = []color.Attribute{color.FgGreen, color.Bold}
-
-	tagFormat = []color.Attribute{color.FgCyan}
 )
 
 func initColorize() {
