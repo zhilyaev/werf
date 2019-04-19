@@ -10,9 +10,15 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/flant/logboek"
 	"github.com/gosuri/uitable"
 	"github.com/gosuri/uitable/util/strutil"
+	corev1 "k8s.io/api/core/v1"
+	apiextv1beta1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
+	kubeErrors "k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/util/validation"
+	"k8s.io/cli-runtime/pkg/genericclioptions"
+	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/helm/pkg/chartutil"
 	"k8s.io/helm/pkg/helm"
 	helm_env "k8s.io/helm/pkg/helm/environment"
@@ -26,12 +32,10 @@ import (
 	"k8s.io/helm/pkg/tiller"
 	tiller_env "k8s.io/helm/pkg/tiller/environment"
 	"k8s.io/helm/pkg/timeconv"
+	cmdutil "k8s.io/kubernetes/pkg/kubectl/cmd/util"
+	kubectlValidation "k8s.io/kubernetes/pkg/kubectl/validation"
 
-	corev1 "k8s.io/api/core/v1"
-	kubeErrors "k8s.io/apimachinery/pkg/api/errors"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/util/validation"
-	"k8s.io/cli-runtime/pkg/genericclioptions"
+	"github.com/flant/logboek"
 )
 
 var (
@@ -73,7 +77,7 @@ func initTiller(kubeConfig, kubeContext, helmReleaseStorageNamespace, helmReleas
 	configFlags.KubeConfig = &helmSettings.KubeConfig
 	configFlags.Namespace = &helmReleaseStorageNamespace
 
-	kubeClient := kube.New(configFlags)
+	kubeClient := NewKubeClientWithoutSchemeValidation(configFlags)
 
 	resourcesWaiter = &ResourcesWaiter{Client: kubeClient}
 	kubeClient.SetResourcesWaiter(resourcesWaiter)
@@ -131,6 +135,36 @@ func initTiller(kubeConfig, kubeContext, helmReleaseStorageNamespace, helmReleas
 	}
 
 	return nil
+}
+
+type FactoryWithoutSchemeValidation struct {
+	cmdutil.Factory
+}
+
+func (f *FactoryWithoutSchemeValidation) Validator(_ bool) (kubectlValidation.Schema, error) {
+	return f.Factory.Validator(false)
+}
+
+func NewFactoryWithoutSchemeValidation(clientGetter genericclioptions.RESTClientGetter) *FactoryWithoutSchemeValidation {
+	return &FactoryWithoutSchemeValidation{cmdutil.NewFactory(clientGetter)}
+}
+
+func NewKubeClientWithoutSchemeValidation(getter genericclioptions.RESTClientGetter) *kube.Client {
+	var nopLogger = func(_ string, _ ...interface{}) {}
+
+	if getter == nil {
+		getter = genericclioptions.NewConfigFlags(true)
+	}
+
+	err := apiextv1beta1.AddToScheme(scheme.Scheme)
+	if err != nil {
+		panic(err)
+	}
+
+	return &kube.Client{
+		Factory: NewFactoryWithoutSchemeValidation(getter),
+		Log:     nopLogger,
+	}
 }
 
 type releaseContentOptions struct {
