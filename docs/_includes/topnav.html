@@ -19,16 +19,16 @@
 {% assign topnav_dropdowns = site.data[page.topnav].topnav_dropdowns %}
 
                     {% for folder in topnav.topnav %}
-                         {% comment %} 
-                         Notice: 
+                         {% comment %}
+                         Notice:
                             Liquid engine is very poor in working with boolean logic.
                             Also, somehow, it can not check equality of folder.url == '/' and page.url=='/' - something buggy here.
                             That's why below lines of li class are such ugly.
                          {% endcomment %}
-                        <li 
+                        <li
                             {% if folder.url.size>1 and page.url contains folder.url %}class="active"{% endif %}
                             {% if folder.url.size<2 and page.url.size<2 %}class="active"{% endif %}>
-                            <a href="{{ folder.url }}">{{ folder.title }}</a>   
+                            <a href="{{ folder.url }}">{{ folder.title }}</a>
                             {% if folder.folderitems %}
                             <ul>
                                 {% for folderitem in folder.folderitems %}
@@ -44,7 +44,7 @@
                             {% endif %}
                         </li>
                 {% endfor %}
-                <!-- entries with drop-downs appear here --> 
+                <!-- entries with drop-downs appear here -->
                 <!-- conditional logic to control which topnav appears for the audience defined in the configuration file.-->
                 {% for entry in topnav_dropdowns %}
                 {% for folder in entry.folders %}
@@ -65,6 +65,13 @@
                 {% endfor %}
                 {% endfor %}
             </ul>
+          <div class="">
+            <form action="https://www.google.com/search" class="searchform" method="get" name="searchform" target="_blank">
+              <input name="sitesearch" type="hidden" value="werf.io">
+              <input autocomplete="on" class="form-control search" name="q" placeholder="Search in werf.io" required="required"  type="text">
+              <button class="button" type="submit">Search</button>
+            </form>
+          </div>
         </div>
         </div>
         <!-- /.container -->
