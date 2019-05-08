@@ -31,6 +31,7 @@
                             <a href="{{ folder.url }}">{{ folder.title }}</a>
                             {% if folder.folderitems %}
                             <ul>
+                                <li id="doc-versions-menu"></li>
                                 {% for folderitem in folder.folderitems %}
                                     {% if folderitem.external_url %}
                                         <li><a href="{{ folderitem.external_url }}" target="_blank">{{folderitem.title}}</a></li>
