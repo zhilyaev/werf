@@ -54,7 +54,7 @@ $(function() {
 
 // Load versions and append them to topnavbar
 $( document ).ready(function() {
-    $.getJSON('/js/channels.json').success(function (resp) {
+    $.getJSON('/v1.0.3-alpha.2/js/channels.json').success(function (resp) {
     var releasesInfo = resp;
     var currentRelease, currentChannel;
 
