@@ -42,3 +42,5 @@ defaults:
 sidebars:
 - how_to
 - reference
+
+werfVersion: v1.0.3-alpha.1.
