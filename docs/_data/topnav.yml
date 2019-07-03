@@ -15,5 +15,7 @@ topnav:
     - title: CLI
       directory: /cli/
       url: /cli/
+  - title: Installation
+    url: /installation.html
   - title: Publications
     url: /publications.html

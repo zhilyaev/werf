@@ -11,3 +11,5 @@ mkdir $PARTIALS_DIR
 werf docs --dir $PARTIALS_DIR --log-terminal-width=100
 
 cp -f $SOURCE/../README.md $SOURCE/_includes/README.md
+
+sed '/#\ Installation/ r docs/_includes/INSTALLATION.md' README.md

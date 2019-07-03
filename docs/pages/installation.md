@@ -1,8 +1,10 @@
 ---
-title: Documentation
-permalink: documentation.html
+title: Installation
+permalink: installation.html
 layout: page-nosidebar
 ---
+
+{% include INSTALLATION.md %}
 
 Documentation of werf comprises ~100 articles which include common use cases (getting started, deploy to Kubernetes, CI/CD integration and more), comprehensive description of its functions & architecture, as well as CLI, commands.
 
@@ -14,6 +16,8 @@ If you want to understand how to configure application and environment for **dep
 If you want to understand how to set **CI/CD process with Werf** - [start here](how_to/gitlab_ci_cd_integration.html) to understand build, deployment and scheduled registry cleanup.
 
 [Other guides](howto/) describe **advanced cases**, you shall discover on futher working with Werf.
+
+Want to **install Werf**? [README.md in github repository](https://github.com/flant/werf/blob/master/README.md) will help you.
 
 If you have already begun using Werf and trying to understand **common rules, available directives specification and werf architecture details**, read [the Reference section](reference/)
 
