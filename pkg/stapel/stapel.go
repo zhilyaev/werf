@@ -7,7 +7,7 @@ import (
 	"github.com/flant/werf/pkg/docker"
 )
 
-const VERSION = "0.1.2"
+const VERSION = "0.2.1"
 
 func ImageName() string {
 	return fmt.Sprintf("flant/werf-stapel:%s", VERSION)

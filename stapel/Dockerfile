@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:18.04 as base
 
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 RUN >/etc/profile && >/root/.profile
@@ -10,7 +10,7 @@ SHELL ["/bin/bash", "-lc"]
 RUN apt update && apt install -y \
 build-essential wget curl gawk flex bison bzip2 liblzma5 texinfo file \
 gettext python python3 curl git fakeroot gettext gpg ruby ruby-bundler \
-ruby-dev make file m4 xz-utils texlive
+ruby-dev make file m4 xz-utils texlive vim
 
 RUN git config --global user.name flant && git config --global user.email 256@flant.com
 
@@ -19,11 +19,11 @@ ENV TOOLS=/.werf/stapel
 ENV LFS_TGT=x86_64-lfs-linux-gnu
 
 RUN mkdir -pv $LFS$TOOLS && mkdir -pv $LFS/sources && chmod -v a+wt $LFS/sources
-ADD ./wget-list $LFS/sources/wget-list
-ADD ./md5sums $LFS/sources/md5sums
+ADD stapel/wget-list $LFS/sources/wget-list
+ADD stapel/md5sums $LFS/sources/md5sums
 RUN wget --input-file=$LFS/sources/wget-list --continue --directory-prefix=$LFS/sources
 RUN bash -c "pushd $LFS/sources && md5sum -c $LFS/sources/md5sums && popd"
-ADD version-check.sh $LFS/sources/version-check.sh
+ADD stapel/version-check.sh $LFS/sources/version-check.sh
 RUN $LFS/sources/version-check.sh
 
 RUN ln -sv $LFS/.werf /
@@ -48,7 +48,7 @@ WORKDIR $LFS/sources/binutils/build
 RUN make
 RUN mkdir -pv $TOOLS/lib && ln -sv lib $TOOLS/lib64 && make install
 
-ADD ./gcc-before-configure.sh $LFS/sources/gcc-before-configure.sh
+ADD stapel/gcc-before-configure.sh $LFS/sources/gcc-before-configure.sh
 RUN echo "GCC pass 1" && cd $LFS/sources/ && \
 mkdir gcc && \
 tar xf gcc-*.tar.* -C gcc --strip-components 1 && \
@@ -191,7 +191,7 @@ RUN make
 RUN make install
 RUN ln -sv gcc $TOOLS/bin/cc
 
-ADD ./omnibus /omnibus
+ADD stapel/omnibus /omnibus
 WORKDIR /omnibus
 ENV BUNDLE_GEMFILE=/omnibus/Gemfile
 
@@ -227,6 +227,23 @@ cp /usr/lib/python2.7/dist-packages/apt_pkg.x86_64-linux-gnu.so /tmp/apt_pkg.so 
 cp /tmp/apt_pkg.so $TOOLS/embedded/lib/python2.7/ && \
 cp -r /usr/lib/python2.7/dist-packages/apt $TOOLS/embedded/lib/python2.7/ && \
 cp -r /usr/lib/python2.7/dist-packages/aptsources $TOOLS/embedded/lib/python2.7/
+
+# Install golang
+RUN wget https://dl.google.com/go/go1.12.linux-amd64.tar.gz -O /tmp/go.tar.gz
+RUN tar -C /usr/local -xzf /tmp/go.tar.gz
+ENV PATH=$PATH:/usr/local/go/bin
+ENV GO111MODULE=on
+
+WORKDIR /werf
+ADD go.mod /werf/go.mod
+ADD go.sum /werf/go.sum
+RUN go mod download -json
+
+ADD cmd /werf/cmd
+ADD pkg /werf/pkg
+RUN go build -o /.werf/stapel/embedded/lib/python2.7/_logboek.so -buildmode=c-shared github.com/flant/logboek/c_lib
+RUN cp /root/go/pkg/mod/github.com/flant/logboek@*/logboek.py /.werf/stapel/embedded/lib/python2.7
+RUN cp /werf/pkg/build/builder/ansible/crypt.py /.werf/stapel/embedded/lib/python2.7
 
 # Cleanup stapel: only runtime libs and binaries are needed
 RUN rm -rf \
@@ -283,6 +300,6 @@ RUN find $TOOLS/embedded/lib/python2.7 -name *.py[oc] | xargs rm
 
 # Import tools
 
-FROM scratch
+FROM scratch as final
 CMD ["no-such-command"]
 COPY --from=0 /.werf/stapel /.werf/stapel

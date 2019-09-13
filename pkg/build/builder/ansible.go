@@ -63,12 +63,10 @@ func (b *Ansible) stage(userStageName string, container Container) error {
 
 	container.AddEnv(
 		map[string]string{
-			"ANSIBLE_CONFIG":              filepath.Join(b.containerWorkDir(), "ansible.cfg"),
-			"WERF_DUMP_CONFIG_DOC_PATH":   filepath.Join(b.containerWorkDir(), "dump_config.json"),
-			"PYTHONPATH":                  "",
-			"LOGBOEK_SO_PATH":             filepath.Join(b.containerWorkDir(), "lib", "werf", ".logboek.so"),
-			"PYTHONIOENCODING":            "utf-8",
-			"ANSIBLE_PREPEND_SYSTEM_PATH": stapel.SystemPATH(),
+			"ANSIBLE_CONFIG":            filepath.Join(b.containerWorkDir(), "ansible.cfg"),
+			"WERF_DUMP_CONFIG_DOC_PATH": filepath.Join(b.containerWorkDir(), "dump_config.json"),
+			"PYTHONIOENCODING":          "utf-8",
+			"PATH":                      fmt.Sprintf("/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:%s", stapel.SystemPATH()),
 		},
 	)
 
