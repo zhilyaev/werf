@@ -12,15 +12,6 @@ relative_path "unzip60"
 
 build do
   env = with_standard_compiler_flags(with_embedded_path)
-
-  configure_command = [
-    "./configure",
-    "--prefix=#{install_dir}/embedded",
-  ]
-
-  command "./configure" \
-          " --prefix=#{install_dir}/embedded", env: env
-
-  make "-j #{workers}", env: env
-  make "-j #{workers} install", env: env
+  make "-f unix/Makefile -j #{workers} generic", env: env
+  make "-f unix/Makefile prefix=#{install_dir}/embedded install", env: env
 end

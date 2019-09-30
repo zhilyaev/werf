@@ -237,7 +237,7 @@ ENV GO111MODULE=on
 WORKDIR /werf
 ADD go.mod /werf/go.mod
 ADD go.sum /werf/go.sum
-RUN go mod download -json
+RUN bash -ec "echo '142.93.108.123 gonum.org www.gonum.org' >> /etc/hosts && go mod download -json"
 
 ADD cmd /werf/cmd
 ADD pkg /werf/pkg
