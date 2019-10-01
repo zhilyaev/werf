@@ -424,7 +424,7 @@ ln -fs $TOOLS/embedded/lib/libapt-inst.so.2.0.0 $TOOLS/ansible_tools_overlay/lib
 
 # TODO: FIXME move to glibc
 WORKDIR $LFS/sources/glibc/build
-RUN make localedata/install-locales
+RUN mkdir /.werf/stapel/lib/locale
 RUN /.werf/stapel/bin/localedef -i POSIX -f UTF-8 C.UTF-8 || true
 
 # Cleanup stapel: only runtime libs and binaries are needed
@@ -439,13 +439,12 @@ $TOOLS/share/gcc-8.2.0 \
 $TOOLS/share/gnupg \
 $TOOLS/share/info \
 $TOOLS/share/libgpg-error \
-$TOOLS/share/locale \
 $TOOLS/share/man \
+$TOOLS/share/locale \
 $TOOLS/x86_64-lfs-linux-gnu/include \
 $TOOLS/x86_64-lfs-linux-gnu/lib \
 $TOOLS/lib/*.a \
 $TOOLS/lib/*.o \
-$TOOLS/lib/locale \
 $TOOLS/lib64/*.a \
 $TOOLS/lib/gcc \
 $TOOLS/libexec/gcc \
