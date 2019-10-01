@@ -2,20 +2,29 @@ package stapel
 
 import (
 	"fmt"
+	"os"
 	"strconv"
 
 	"github.com/flant/werf/pkg/docker"
 )
 
-const VERSION = "0.2.1"
+const VERSION = "0.2.2"
+
+func getVersion() string {
+	version := VERSION
+	if v := os.Getenv("WERF_STAPEL_IMAGE_VERSION"); v != "" {
+		version = v
+	}
+	return version
+}
 
 func ImageName() string {
-	return fmt.Sprintf("flant/werf-stapel:%s", VERSION)
+	return fmt.Sprintf("flant/werf-stapel:%s", getVersion())
 }
 
 func getContainer() container {
 	return container{
-		Name:      fmt.Sprintf("stapel_%s", VERSION),
+		Name:      fmt.Sprintf("stapel_%s", getVersion()),
 		ImageName: ImageName(),
 		Volume:    "/.werf/stapel",
 	}
