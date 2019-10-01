@@ -432,10 +432,20 @@ RUN rm -rf \
 $TOOLS/LICENSE* \
 $TOOLS/version-manifest.* \
 $TOOLS/include \
+$TOOLS/share/aclocal \
+$TOOLS/share/common-lisp \
+$TOOLS/share/doc \
+$TOOLS/share/gcc-8.2.0 \
+$TOOLS/share/gnupg \
+$TOOLS/share/info \
+$TOOLS/share/libgpg-error \
+$TOOLS/share/locale \
+$TOOLS/share/man \
 $TOOLS/x86_64-lfs-linux-gnu/include \
 $TOOLS/x86_64-lfs-linux-gnu/lib \
 $TOOLS/lib/*.a \
 $TOOLS/lib/*.o \
+$TOOLS/lib/locale \
 $TOOLS/lib64/*.a \
 $TOOLS/lib/gcc \
 $TOOLS/libexec/gcc \
@@ -457,13 +467,25 @@ $TOOLS/embedded/lib/python2.7/site-packages/ansible/modules/network \
 $TOOLS/embedded/lib/python2.7/site-packages/pip \
 $TOOLS/embedded/lib/python2.7/site-packages/setuptools \
 $TOOLS/embedded/lib/python2.7/site-packages/*.dist-info \
+$TOOLS/embedded/share/aclocal \
 $TOOLS/embedded/share/doc \
 $TOOLS/embedded/share/info \
 $TOOLS/embedded/share/man \
 $TOOLS/embedded/share/local \
+$TOOLS/embedded/share/locale \
 $TOOLS/embedded/var \
 $TOOLS/embedded/info \
 $TOOLS/embedded/man
+
+RUN cp $TOOLS/share/i18n/charmaps/UTF-8.gz /tmp && \
+rm -rf $TOOLS/share/i18n/charmaps/ && \
+mkdir -p $TOOLS/share/i18n/charmaps/ && \
+mv /tmp/UTF-8.gz $TOOLS/share/i18n/charmaps/
+
+RUN cp $TOOLS/share/i18n/locales/POSIX /tmp && \
+rm -rf $TOOLS/share/i18n/locales/ && \
+mkdir -p $TOOLS/share/i18n/locales/ && \
+mv /tmp/POSIX $TOOLS/share/i18n/locales/
 
 RUN cp $TOOLS/x86_64-lfs-linux-gnu/bin/ld /tmp && \
 rm -rf $TOOLS/x86_64-lfs-linux-gnu/bin && \
@@ -477,8 +499,33 @@ mv /tmp/UNICODE.so $TOOLS/lib/gconv
 
 RUN find $TOOLS/embedded/lib/python2.7 -name *.py[oc] | xargs rm
 
+RUN mkdir /tmp/bin && \
+cp $TOOLS/bin/gpg* /tmp/bin && \
+cp $TOOLS/bin/gnutls* /tmp/bin && \
+cp $TOOLS/bin/nettle* /tmp/bin && \
+cp $TOOLS/bin/libassuan* /tmp/bin && \
+cp $TOOLS/bin/libgcrypt* /tmp/bin && \
+cp $TOOLS/bin/npth* /tmp/bin && \
+rm -rf $TOOLS/bin && \
+mv /tmp/bin $TOOLS/bin
+
 # Import tools
 
 FROM scratch as final
 CMD ["no-such-command"]
-COPY --from=0 /.werf/stapel /.werf/stapel
+ENV TOOLS=/.werf/stapel
+COPY --from=0 $TOOLS/ansible_tools_overlay $TOOLS/ansible_tools_overlay
+COPY --from=0 $TOOLS/libexec $TOOLS/libexec
+COPY --from=0 $TOOLS/x86_64-lfs-linux-gnu $TOOLS/x86_64-lfs-linux-gnu
+COPY --from=0 $TOOLS/sbin $TOOLS/sbin
+COPY --from=0 $TOOLS/bin $TOOLS/bin
+COPY --from=0 $TOOLS/lib64 $TOOLS/lib64
+COPY --from=0 $TOOLS/lib $TOOLS/lib
+COPY --from=0 $TOOLS/share $TOOLS/share
+COPY --from=0 $TOOLS/embedded/bin $TOOLS/embedded/bin
+COPY --from=0 $TOOLS/embedded/etc $TOOLS/embedded/etc
+COPY --from=0 $TOOLS/embedded/lib $TOOLS/embedded/lib
+COPY --from=0 $TOOLS/embedded/libexec $TOOLS/embedded/libexec
+COPY --from=0 $TOOLS/embedded/sbin $TOOLS/embedded/sbin
+COPY --from=0 $TOOLS/embedded/share $TOOLS/embedded/share
+COPY --from=0 $TOOLS/embedded/ssl $TOOLS/embedded/ssl
