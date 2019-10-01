@@ -305,28 +305,8 @@ RUN ./configure --prefix=$TOOLS --enable-symcryptrun --localstatedir=/.werf/stap
 RUN make
 RUN make install
 
-# python-apt package will install all libs in docker.from image.
-# python-apt will be installed automatically by ansible apt module on first run.
-# flant/werf-stapel offers support for ansible-apt-module only for ubuntu:14.04 ubuntu:16.04 ubuntu:18.04
-# TODO: after go mod download
+# Restore PATH *not to* use stapel build tools anymore
 ENV PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin
-RUN apt install -y python-apt libzstd1
-RUN \
-cp /usr/lib/x86_64-linux-gnu/libapt-inst.so.2.0 $TOOLS/embedded/lib/ && \
-cp /usr/lib/x86_64-linux-gnu/libapt-pkg.so.5.0 $TOOLS/embedded/lib/ && \
-cp /usr/lib/x86_64-linux-gnu/liblz4.so.1 $TOOLS/embedded/lib/ && \
-cp /lib/x86_64-linux-gnu/liblzma.so.5 $TOOLS/embedded/lib/ && \
-cp /lib/x86_64-linux-gnu/libbz2.so.1.0 $TOOLS/embedded/lib/ && \
-cp /lib/x86_64-linux-gnu/libudev.so.1 $TOOLS/embedded/lib/ && \
-cp /usr/lib/x86_64-linux-gnu/libzstd.so* $TOOLS/embedded/lib/ && \
-cp /usr/lib/python2.7/dist-packages/apt_inst.x86_64-linux-gnu.so /tmp/apt_inst.so && \
-cp /tmp/apt_inst.so $TOOLS/embedded/lib/python2.7/ && \
-cp /usr/lib/python2.7/dist-packages/apt_pkg.x86_64-linux-gnu.so /tmp/apt_pkg.so && \
-cp /tmp/apt_pkg.so $TOOLS/embedded/lib/python2.7/ && \
-cp -r /usr/lib/python2.7/dist-packages/apt $TOOLS/embedded/lib/python2.7/ && \
-cp -r /usr/lib/python2.7/dist-packages/aptsources $TOOLS/embedded/lib/python2.7/ && \
-cp /lib/x86_64-linux-gnu/libsystemd.so.0.21.0 $TOOLS/lib && \
-cp /lib/x86_64-linux-gnu/libsystemd.so.0 $TOOLS/lib
 
 # Install golang
 RUN wget https://dl.google.com/go/go1.12.linux-amd64.tar.gz -O /tmp/go.tar.gz
@@ -344,6 +324,43 @@ ADD pkg /werf/pkg
 RUN go build -o /.werf/stapel/embedded/lib/python2.7/_logboek.so -buildmode=c-shared github.com/flant/logboek/c_lib
 RUN cp /root/go/pkg/mod/github.com/flant/logboek@*/logboek.py /.werf/stapel/embedded/lib/python2.7
 RUN cp /werf/pkg/build/builder/ansible/crypt.py /.werf/stapel/embedded/lib/python2.7
+
+# python-apt package will install all libs in docker.from image.
+# python-apt will be installed automatically by ansible apt module on first run.
+# flant/werf-stapel offers support for ansible-apt-module only for ubuntu:14.04 ubuntu:16.04 ubuntu:18.04
+RUN apt install -y python-apt libzstd1 apt-utils
+RUN \
+cp /usr/lib/x86_64-linux-gnu/libapt-private.so.0.0 $TOOLS/embedded/lib/ && \
+cp /usr/lib/x86_64-linux-gnu/libapt-private.so.0.0.0 $TOOLS/embedded/lib/ && \
+cp /usr/lib/x86_64-linux-gnu/libapt-pkg.so.5.0 $TOOLS/embedded/lib/ && \
+cp /usr/lib/x86_64-linux-gnu/libapt-pkg.so.5.0.2 $TOOLS/embedded/lib/ && \
+cp /usr/lib/x86_64-linux-gnu/libapt-inst.so.2.0 $TOOLS/embedded/lib/ && \
+cp /usr/lib/x86_64-linux-gnu/libapt-inst.so.2.0.0 $TOOLS/embedded/lib/ && \
+cp /usr/lib/x86_64-linux-gnu/liblz4.so.1 $TOOLS/embedded/lib/ && \
+cp /lib/x86_64-linux-gnu/liblzma.so.5 $TOOLS/embedded/lib/ && \
+cp /lib/x86_64-linux-gnu/libbz2.so.1.0 $TOOLS/embedded/lib/ && \
+cp /lib/x86_64-linux-gnu/libudev.so.1 $TOOLS/embedded/lib/ && \
+cp /usr/lib/x86_64-linux-gnu/libzstd.so* $TOOLS/embedded/lib/ && \
+cp /usr/lib/python2.7/dist-packages/apt_inst.x86_64-linux-gnu.so /tmp/apt_inst.so && \
+cp /tmp/apt_inst.so $TOOLS/embedded/lib/python2.7/ && \
+cp /usr/lib/python2.7/dist-packages/apt_pkg.x86_64-linux-gnu.so /tmp/apt_pkg.so && \
+cp /tmp/apt_pkg.so $TOOLS/embedded/lib/python2.7/ && \
+cp -r /usr/lib/python2.7/dist-packages/apt $TOOLS/embedded/lib/python2.7/ && \
+cp -r /usr/lib/python2.7/dist-packages/aptsources $TOOLS/embedded/lib/python2.7/ && \
+cp /lib/x86_64-linux-gnu/libsystemd.so.0.21.0 $TOOLS/lib && \
+cp /lib/x86_64-linux-gnu/libsystemd.so.0 $TOOLS/lib && \
+cp /usr/bin/apt-extracttemplates $TOOLS/embedded/bin
+
+# Create ansible tools overlay path
+RUN mkdir -p $TOOLS/ansible_tools_overlay/bin $TOOLS/ansible_tools_overlay/lib
+RUN \
+ln -fs $TOOLS/embedded/bin/tar $TOOLS/ansible_tools_overlay/bin/tar && \
+ln -fs $TOOLS/embedded/lib/libapt-private.so.0.0 $TOOLS/ansible_tools_overlay/lib/libapt-private.so.0.0 && \
+ln -fs $TOOLS/embedded/lib/libapt-private.so.0.0 $TOOLS/ansible_tools_overlay/lib/libapt-private.so.0.0.0 && \
+ln -fs $TOOLS/embedded/lib/libapt-pkg.so.5.0 $TOOLS/ansible_tools_overlay/lib/libapt-private.so.5.0 && \
+ln -fs $TOOLS/embedded/lib/libapt-pkg.so.5.0.2 $TOOLS/ansible_tools_overlay/lib/libapt-private.so.5.0.2 && \
+ln -fs $TOOLS/embedded/lib/libapt-inst.so.2.0 $TOOLS/ansible_tools_overlay/lib/libapt-inst.so.2.0 && \
+ln -fs $TOOLS/embedded/lib/libapt-inst.so.2.0.0 $TOOLS/ansible_tools_overlay/lib/libapt-inst.so.2.0.0
 
 # Cleanup stapel: only runtime libs and binaries are needed
 RUN rm -rf \
@@ -395,10 +412,6 @@ mkdir -p $TOOLS/lib/gconv && \
 mv /tmp/UNICODE.so $TOOLS/lib/gconv
 
 RUN find $TOOLS/embedded/lib/python2.7 -name *.py[oc] | xargs rm
-
-# Create ansible tools overlay path
-RUN mkdir -p /.werf/stapel/ansible_tools_overlay/bin
-RUN ln -fs /.werf/stapel/embedded/bin/tar /.werf/stapel/ansible_tools_overlay/bin/tar
 
 # Import tools
 
