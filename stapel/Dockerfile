@@ -363,7 +363,8 @@ ln -fs $TOOLS/embedded/lib/libapt-pkg.so.5.0.2 $TOOLS/ansible_tools_overlay/lib/
 ln -fs $TOOLS/embedded/lib/libapt-inst.so.2.0 $TOOLS/ansible_tools_overlay/lib/libapt-inst.so.2.0 && \
 ln -fs $TOOLS/embedded/lib/libapt-inst.so.2.0.0 $TOOLS/ansible_tools_overlay/lib/libapt-inst.so.2.0.0
 
-# FIXME: https://github.com/flant/werf/issues/1798
+# TODO: FIXME: https://github.com/flant/werf/issues/1798
+# TODO: FIXME: try set nsswitch.conf file: http://www.linuxfromscratch.org/lfs/view/9.0-systemd-rc1/chapter06/glibc.html
 # yum-utils package needed for ansible yum module to work
 #RUN apt install -y yum-utils
 #RUN \
@@ -421,6 +422,11 @@ ln -fs $TOOLS/embedded/lib/libapt-inst.so.2.0.0 $TOOLS/ansible_tools_overlay/lib
 #ln -fs $TOOLS/embedded/lib/librpmio.so.8.0.1 $TOOLS/ansible_tools_overlay/lib/librpmio.so.8.0.1 && \
 #ln -fs $TOOLS/embedded/lib/librpmbuild.so.8 $TOOLS/ansible_tools_overlay/lib/librpmbuild.so.8
 
+# TODO: FIXME move to glibc
+WORKDIR $LFS/sources/glibc/build
+RUN make localedata/install-locales
+RUN /.werf/stapel/bin/localedef -i POSIX -f UTF-8 C.UTF-8 || true
+
 # Cleanup stapel: only runtime libs and binaries are needed
 RUN rm -rf \
 $TOOLS/LICENSE* \
@@ -433,7 +439,6 @@ $TOOLS/lib/*.o \
 $TOOLS/lib64/*.a \
 $TOOLS/lib/gcc \
 $TOOLS/libexec/gcc \
-$TOOLS/share \
 $TOOLS/var \
 $TOOLS/embedded/lib/*.a \
 $TOOLS/embedded/include \

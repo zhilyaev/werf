@@ -68,6 +68,8 @@ func (b *Ansible) stage(userStageName string, container Container) error {
 			"PYTHONIOENCODING":          "utf-8",
 			"PATH":                      fmt.Sprintf("%s:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:%s", stapel.AnsibleToolsOverlayPATH(), stapel.SystemPATH()),
 			"LD_LIBRARY_PATH":           stapel.AnsibleLibsOverlayLDPATH(),
+			"LANG":                      "C.UTF-8",
+			"LC_ALL":                    "C.UTF-8",
 		},
 	)
 
