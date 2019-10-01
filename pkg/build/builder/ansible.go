@@ -66,7 +66,7 @@ func (b *Ansible) stage(userStageName string, container Container) error {
 			"ANSIBLE_CONFIG":            filepath.Join(b.containerWorkDir(), "ansible.cfg"),
 			"WERF_DUMP_CONFIG_DOC_PATH": filepath.Join(b.containerWorkDir(), "dump_config.json"),
 			"PYTHONIOENCODING":          "utf-8",
-			"PATH":                      fmt.Sprintf("%s:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin", stapel.SystemPATH()),
+			"PATH":                      fmt.Sprintf("%s:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:%s", stapel.AnsibleToolsOverlayPATH(), stapel.SystemPATH()),
 		},
 	)
 

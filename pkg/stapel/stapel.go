@@ -113,8 +113,16 @@ func AnsiblePlaybookBinPath() string {
 	return embeddedBinPath("ansible-playbook")
 }
 
+// Ansible tools overlay path is like /usr/local which has more priority than /usr.
+// Ansible tools overlay path used to force ansible to use tools directly from stapel rather than find it in the base system.
+// Use case is "unarchive" module which does not work with alpine busybox "tar" util (which is installed by default
+// and takes precedence over other utils). For this case we put tar into ansible tools overlay path.
+func AnsibleToolsOverlayPATH() string {
+	return "/.werf/stapel/ansible_tools_overlay/bin"
+}
+
 func SystemPATH() string {
-	return fmt.Sprintf("/.werf/stapel/sbin:/.werf/stapel/bin:/.werf/stapel/embedded/sbin:/.werf/stapel/embedded/bin")
+	return "/.werf/stapel/sbin:/.werf/stapel/embedded/sbin:/.werf/stapel/bin:/.werf/stapel/embedded/bin"
 }
 
 func SudoCommand(owner, group string) string {

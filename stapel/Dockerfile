@@ -308,6 +308,7 @@ RUN make install
 # python-apt package will install all libs in docker.from image.
 # python-apt will be installed automatically by ansible apt module on first run.
 # flant/werf-stapel offers support for ansible-apt-module only for ubuntu:14.04 ubuntu:16.04 ubuntu:18.04
+# TODO: after go mod download
 ENV PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin
 RUN apt install -y python-apt libzstd1
 RUN \
@@ -323,7 +324,9 @@ cp /tmp/apt_inst.so $TOOLS/embedded/lib/python2.7/ && \
 cp /usr/lib/python2.7/dist-packages/apt_pkg.x86_64-linux-gnu.so /tmp/apt_pkg.so && \
 cp /tmp/apt_pkg.so $TOOLS/embedded/lib/python2.7/ && \
 cp -r /usr/lib/python2.7/dist-packages/apt $TOOLS/embedded/lib/python2.7/ && \
-cp -r /usr/lib/python2.7/dist-packages/aptsources $TOOLS/embedded/lib/python2.7/
+cp -r /usr/lib/python2.7/dist-packages/aptsources $TOOLS/embedded/lib/python2.7/ && \
+cp /lib/x86_64-linux-gnu/libsystemd.so.0.21.0 $TOOLS/lib && \
+cp /lib/x86_64-linux-gnu/libsystemd.so.0 $TOOLS/lib
 
 # Install golang
 RUN wget https://dl.google.com/go/go1.12.linux-amd64.tar.gz -O /tmp/go.tar.gz
@@ -392,6 +395,10 @@ mkdir -p $TOOLS/lib/gconv && \
 mv /tmp/UNICODE.so $TOOLS/lib/gconv
 
 RUN find $TOOLS/embedded/lib/python2.7 -name *.py[oc] | xargs rm
+
+# Create ansible tools overlay path
+RUN mkdir -p /.werf/stapel/ansible_tools_overlay/bin
+RUN ln -fs /.werf/stapel/embedded/bin/tar /.werf/stapel/ansible_tools_overlay/bin/tar
 
 # Import tools
 
