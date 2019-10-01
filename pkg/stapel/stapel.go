@@ -114,7 +114,7 @@ func AnsiblePlaybookBinPath() string {
 }
 
 func SystemPATH() string {
-	return fmt.Sprintf("/.werf/stapel/embedded/bin:/.werf/stapel/embedded/sbin")
+	return fmt.Sprintf("/.werf/stapel/sbin:/.werf/stapel/bin:/.werf/stapel/embedded/sbin:/.werf/stapel/embedded/bin")
 }
 
 func SudoCommand(owner, group string) string {

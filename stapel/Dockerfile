@@ -21,6 +21,7 @@ ENV LFS_TGT=x86_64-lfs-linux-gnu
 RUN mkdir -pv $LFS$TOOLS && mkdir -pv $LFS/sources && chmod -v a+wt $LFS/sources
 ADD stapel/wget-list $LFS/sources/wget-list
 ADD stapel/md5sums $LFS/sources/md5sums
+# TODO: rename md5sums & wget-list files
 RUN wget --input-file=$LFS/sources/wget-list --continue --directory-prefix=$LFS/sources
 RUN bash -c "pushd $LFS/sources && md5sum -c $LFS/sources/md5sums && popd"
 ADD stapel/version-check.sh $LFS/sources/version-check.sh
@@ -207,6 +208,102 @@ ENV PATH=$TOOLS/x86_64-lfs-linux-gnu/bin:$TOOLS/bin:$PATH
 RUN mv $(which dpkg-architecture) /tmp/dpkg-architecture
 
 RUN bundle exec omnibus build -o append_timestamp:false werf-stapel
+ENV PKG_CONFIG=/.werf/stapel/embedded/bin/pkg-config
+ENV PKG_CONFIG_PATH="/.werf/stapel/lib/pkgconfig:/.werf/stapel/embedded/lib/pkgconfig"
+
+ADD stapel/wget-list-after-omnibus $LFS/sources/wget-list-after-omnibus
+ADD stapel/wget-list-after-omnibus.md5sums $LFS/sources/wget-list-after-omnibus.md5sums
+RUN wget --input-file=$LFS/sources/wget-list-after-omnibus --continue --directory-prefix=$LFS/sources
+RUN bash -c "pushd $LFS/sources && md5sum -c $LFS/sources/wget-list-after-omnibus.md5sums && popd"
+
+# libgpg-error
+RUN echo "libgpg-error" && cd $LFS/sources && \
+mkdir libgpg-error && \
+tar xf libgpg-error*.tar.* -C libgpg-error --strip-components 1
+WORKDIR $LFS/sources/libgpg-error
+RUN sed -i 's/namespace/pkg_&/' src/Makefile.{am,in} src/mkstrtable.awk
+RUN ./configure --prefix=$TOOLS
+RUN make
+RUN make install
+
+# libgcrypt
+RUN echo "libgcrypt" && cd $LFS/sources && \
+mkdir libgcrypt && \
+tar xf libgcrypt*.tar.* -C libgcrypt --strip-components 1
+WORKDIR $LFS/sources/libgcrypt
+RUN ./configure --prefix=$TOOLS
+RUN make
+RUN make install
+
+# libassuan
+RUN echo "libassuan" && cd $LFS/sources && \
+mkdir libassuan && \
+tar xf libassuan*.tar.* -C libassuan --strip-components 1
+WORKDIR $LFS/sources/libassuan
+RUN ./configure --prefix=$TOOLS
+RUN make
+RUN make install
+
+# libksba
+RUN echo "libksba" && cd $LFS/sources && \
+mkdir libksba && \
+tar xf libksba*.tar.* -C libksba --strip-components 1
+WORKDIR $LFS/sources/libksba
+RUN ./configure --prefix=$TOOLS
+RUN make
+RUN make install
+
+# npth
+RUN echo "npth" && cd $LFS/sources && \
+mkdir npth && \
+tar xf npth*.tar.* -C npth --strip-components 1
+WORKDIR $LFS/sources/npth
+RUN ./configure --prefix=$TOOLS
+RUN make
+RUN make install
+
+# gmp
+RUN echo "gmp" && cd $LFS/sources && \
+mkdir gmp && \
+tar xf gmp*.tar.* -C gmp --strip-components 1
+WORKDIR $LFS/sources/gmp
+RUN ./configure --prefix=$TOOLS --disable-static
+RUN make
+RUN make install
+
+# nettle
+RUN echo "nettle" && cd $LFS/sources && \
+mkdir nettle && \
+tar xf nettle*.tar.* -C nettle --strip-components 1
+WORKDIR $LFS/sources/nettle
+RUN ./configure --prefix=$TOOLS --disable-static
+RUN make
+RUN make install && chmod -v 755 $TOOLS/lib/libnettle.so
+
+## p11-kit
+#RUN echo "p11-kit" && cd $LFS/sources && \
+#mkdir p11-kit && \
+#tar xf p11-kit*.tar.* -C p11-kit --strip-components 1
+#WORKDIR $LFS/sources/p11-kit
+#RUN ./configure --prefix=$TOOLS --sysconfigdir=$TOOLS/etc
+
+# gnutls
+RUN echo "gnutls" && cd $LFS/sources && \
+mkdir gnutls && \
+tar xf gnutls*.tar.* -C gnutls --strip-components 1
+WORKDIR $LFS/sources/gnutls
+RUN ./configure --prefix=$TOOLS --disable-guile --without-p11-kit --with-included-libtasn1 --with-included-unistring
+RUN make
+RUN make install
+
+# gnupg
+RUN echo "gnupg" && cd $LFS/sources && \
+mkdir gnupg && \
+tar xf gnupg*.tar.* -C gnupg --strip-components 1
+WORKDIR $LFS/sources/gnupg
+RUN ./configure --prefix=$TOOLS --enable-symcryptrun --localstatedir=/.werf/stapel/var
+RUN make
+RUN make install
 
 # python-apt package will install all libs in docker.from image.
 # python-apt will be installed automatically by ansible apt module on first run.
@@ -249,8 +346,6 @@ RUN cp /werf/pkg/build/builder/ansible/crypt.py /.werf/stapel/embedded/lib/pytho
 RUN rm -rf \
 $TOOLS/LICENSE* \
 $TOOLS/version-manifest.* \
-$TOOLS/sbin \
-$TOOLS/bin \
 $TOOLS/include \
 $TOOLS/x86_64-lfs-linux-gnu/include \
 $TOOLS/x86_64-lfs-linux-gnu/lib \
