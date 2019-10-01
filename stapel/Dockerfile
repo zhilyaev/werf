@@ -363,62 +363,63 @@ ln -fs $TOOLS/embedded/lib/libapt-pkg.so.5.0.2 $TOOLS/ansible_tools_overlay/lib/
 ln -fs $TOOLS/embedded/lib/libapt-inst.so.2.0 $TOOLS/ansible_tools_overlay/lib/libapt-inst.so.2.0 && \
 ln -fs $TOOLS/embedded/lib/libapt-inst.so.2.0.0 $TOOLS/ansible_tools_overlay/lib/libapt-inst.so.2.0.0
 
+# FIXME: https://github.com/flant/werf/issues/1798
 # yum-utils package needed for ansible yum module to work
-RUN apt install -y yum-utils
-RUN \
-cp -r /usr/lib/python2.7/dist-packages/yumutils $TOOLS/embedded/lib/python2.7/ && \
-cp -r /usr/lib/python2.7/dist-packages/yum $TOOLS/embedded/lib/python2.7/ && \
-cp -r /usr/lib/python2.7/dist-packages/rpm $TOOLS/embedded/lib/python2.7/ && \
-ln -fs $TOOLS/embedded/lib/python2.7/rpm/_rpm.x86_64-linux-gnu.so $TOOLS/embedded/lib/python2.7/rpm/_rpm.so && \
-ln -fs $TOOLS/embedded/lib/python2.7/rpm/_rpmb.x86_64-linux-gnu.so $TOOLS/embedded/lib/python2.7/rpm/_rpmb.so && \
-ln -fs $TOOLS/embedded/lib/python2.7/rpm/_rpms.x86_64-linux-gnu.so $TOOLS/embedded/lib/python2.7/rpm/_rpms.so && \
-cp /usr/lib/x86_64-linux-gnu/librpmbuild.so.8.0.1 $TOOLS/embedded/lib/ && \
-cp /usr/lib/x86_64-linux-gnu/librpmsign.so.8.0.1 $TOOLS/embedded/lib/ && \
-cp /usr/lib/x86_64-linux-gnu/librpm.so.8.0.1 $TOOLS/embedded/lib/ && \
-cp /usr/lib/x86_64-linux-gnu/librpm.so.8 $TOOLS/embedded/lib/ && \
-cp /usr/lib/x86_64-linux-gnu/librpmio.so.8 $TOOLS/embedded/lib/ && \
-cp /usr/lib/x86_64-linux-gnu/librpmsign.so.8 $TOOLS/embedded/lib/ && \
-cp /usr/lib/x86_64-linux-gnu/librpmio.so.8.0.1 $TOOLS/embedded/lib/ && \
-cp /usr/lib/x86_64-linux-gnu/librpmbuild.so.8 $TOOLS/embedded/lib/ && \
-cp /lib/x86_64-linux-gnu/libcap.so.2.25 $TOOLS/lib && \
-cp /lib/x86_64-linux-gnu/libcap.so.2 $TOOLS/lib && \
-cp /usr/lib/x86_64-linux-gnu/liblua5.2.so.0 $TOOLS/lib && \
-cp /usr/lib/x86_64-linux-gnu/libdb-5.3.so $TOOLS/lib && \
-cp /usr/lib/x86_64-linux-gnu/libelf.so.1 $TOOLS/lib && \
-cp /usr/lib/x86_64-linux-gnu/libplc4.so $TOOLS/lib && \
-cp /usr/lib/x86_64-linux-gnu/libplds4.so $TOOLS/lib && \
-cp /usr/lib/x86_64-linux-gnu/libnspr4.so $TOOLS/lib && \
-cp /lib/x86_64-linux-gnu/libnss_nis.so.2 $TOOLS/lib && \
-cp /lib/x86_64-linux-gnu/libnss_compat.so.2 $TOOLS/lib && \
-cp /lib/x86_64-linux-gnu/libnss_nis-2.27.so $TOOLS/lib && \
-cp /lib/x86_64-linux-gnu/libnss_files-2.27.so $TOOLS/lib && \
-cp /lib/x86_64-linux-gnu/libnss_nisplus-2.27.so $TOOLS/lib && \
-cp /lib/x86_64-linux-gnu/libnss_nisplus.so.2 $TOOLS/lib && \
-cp /lib/x86_64-linux-gnu/libnss_hesiod-2.27.so $TOOLS/lib && \
-cp /lib/x86_64-linux-gnu/libnss_dns.so.2 $TOOLS/lib && \
-cp /lib/x86_64-linux-gnu/libnss_hesiod.so.2 $TOOLS/lib && \
-cp /lib/x86_64-linux-gnu/libnss_dns-2.27.so $TOOLS/lib && \
-cp /lib/x86_64-linux-gnu/libnss_files.so.2 $TOOLS/lib && \
-cp /lib/x86_64-linux-gnu/libnss_compat-2.27.so $TOOLS/lib && \
-cp /usr/lib/x86_64-linux-gnu/libnss_files.so $TOOLS/lib && \
-cp /usr/lib/x86_64-linux-gnu/libnss_dns.so $TOOLS/lib && \
-cp /usr/lib/x86_64-linux-gnu/libnss_nis.so $TOOLS/lib && \
-cp /usr/lib/x86_64-linux-gnu/libnss_nisplus.so $TOOLS/lib && \
-cp /usr/lib/x86_64-linux-gnu/libnss3.so $TOOLS/lib && \
-cp /usr/lib/x86_64-linux-gnu/libnss_hesiod.so $TOOLS/lib && \
-cp /usr/lib/x86_64-linux-gnu/libnss_compat.so $TOOLS/lib && \
-cp /usr/lib/x86_64-linux-gnu/libnssutil3.so $TOOLS/lib && \
-cp -r /usr/lib/x86_64-linux-gnu/nss $TOOLS/lib
-
-RUN \
-ln -fs $TOOLS/embedded/lib/librpmbuild.so.8.0.1 $TOOLS/ansible_tools_overlay/lib/librpmbuild.so.8.0.1 && \
-ln -fs $TOOLS/embedded/lib/librpmsign.so.8.0.1 $TOOLS/ansible_tools_overlay/lib/librpmsign.so.8.0.1 && \
-ln -fs $TOOLS/embedded/lib/librpm.so.8.0.1 $TOOLS/ansible_tools_overlay/lib/librpm.so.8.0.1 && \
-ln -fs $TOOLS/embedded/lib/librpm.so.8 $TOOLS/ansible_tools_overlay/lib/librpm.so.8 && \
-ln -fs $TOOLS/embedded/lib/librpmio.so.8 $TOOLS/ansible_tools_overlay/lib/librpmio.so.8 && \
-ln -fs $TOOLS/embedded/lib/librpmsign.so.8 $TOOLS/ansible_tools_overlay/lib/librpmsign.so.8 && \
-ln -fs $TOOLS/embedded/lib/librpmio.so.8.0.1 $TOOLS/ansible_tools_overlay/lib/librpmio.so.8.0.1 && \
-ln -fs $TOOLS/embedded/lib/librpmbuild.so.8 $TOOLS/ansible_tools_overlay/lib/librpmbuild.so.8
+#RUN apt install -y yum-utils
+#RUN \
+#cp -r /usr/lib/python2.7/dist-packages/yumutils $TOOLS/embedded/lib/python2.7/ && \
+#cp -r /usr/lib/python2.7/dist-packages/yum $TOOLS/embedded/lib/python2.7/ && \
+#cp -r /usr/lib/python2.7/dist-packages/rpm $TOOLS/embedded/lib/python2.7/ && \
+#ln -fs $TOOLS/embedded/lib/python2.7/rpm/_rpm.x86_64-linux-gnu.so $TOOLS/embedded/lib/python2.7/rpm/_rpm.so && \
+#ln -fs $TOOLS/embedded/lib/python2.7/rpm/_rpmb.x86_64-linux-gnu.so $TOOLS/embedded/lib/python2.7/rpm/_rpmb.so && \
+#ln -fs $TOOLS/embedded/lib/python2.7/rpm/_rpms.x86_64-linux-gnu.so $TOOLS/embedded/lib/python2.7/rpm/_rpms.so && \
+#cp /usr/lib/x86_64-linux-gnu/librpmbuild.so.8.0.1 $TOOLS/embedded/lib/ && \
+#cp /usr/lib/x86_64-linux-gnu/librpmsign.so.8.0.1 $TOOLS/embedded/lib/ && \
+#cp /usr/lib/x86_64-linux-gnu/librpm.so.8.0.1 $TOOLS/embedded/lib/ && \
+#cp /usr/lib/x86_64-linux-gnu/librpm.so.8 $TOOLS/embedded/lib/ && \
+#cp /usr/lib/x86_64-linux-gnu/librpmio.so.8 $TOOLS/embedded/lib/ && \
+#cp /usr/lib/x86_64-linux-gnu/librpmsign.so.8 $TOOLS/embedded/lib/ && \
+#cp /usr/lib/x86_64-linux-gnu/librpmio.so.8.0.1 $TOOLS/embedded/lib/ && \
+#cp /usr/lib/x86_64-linux-gnu/librpmbuild.so.8 $TOOLS/embedded/lib/ && \
+#cp /lib/x86_64-linux-gnu/libcap.so.2.25 $TOOLS/lib && \
+#cp /lib/x86_64-linux-gnu/libcap.so.2 $TOOLS/lib && \
+#cp /usr/lib/x86_64-linux-gnu/liblua5.2.so.0 $TOOLS/lib && \
+#cp /usr/lib/x86_64-linux-gnu/libdb-5.3.so $TOOLS/lib && \
+#cp /usr/lib/x86_64-linux-gnu/libelf.so.1 $TOOLS/lib && \
+#cp /usr/lib/x86_64-linux-gnu/libplc4.so $TOOLS/lib && \
+#cp /usr/lib/x86_64-linux-gnu/libplds4.so $TOOLS/lib && \
+#cp /usr/lib/x86_64-linux-gnu/libnspr4.so $TOOLS/lib && \
+#cp /lib/x86_64-linux-gnu/libnss_nis.so.2 $TOOLS/lib && \
+#cp /lib/x86_64-linux-gnu/libnss_compat.so.2 $TOOLS/lib && \
+#cp /lib/x86_64-linux-gnu/libnss_nis-2.27.so $TOOLS/lib && \
+#cp /lib/x86_64-linux-gnu/libnss_files-2.27.so $TOOLS/lib && \
+#cp /lib/x86_64-linux-gnu/libnss_nisplus-2.27.so $TOOLS/lib && \
+#cp /lib/x86_64-linux-gnu/libnss_nisplus.so.2 $TOOLS/lib && \
+#cp /lib/x86_64-linux-gnu/libnss_hesiod-2.27.so $TOOLS/lib && \
+#cp /lib/x86_64-linux-gnu/libnss_dns.so.2 $TOOLS/lib && \
+#cp /lib/x86_64-linux-gnu/libnss_hesiod.so.2 $TOOLS/lib && \
+#cp /lib/x86_64-linux-gnu/libnss_dns-2.27.so $TOOLS/lib && \
+#cp /lib/x86_64-linux-gnu/libnss_files.so.2 $TOOLS/lib && \
+#cp /lib/x86_64-linux-gnu/libnss_compat-2.27.so $TOOLS/lib && \
+#cp /usr/lib/x86_64-linux-gnu/libnss_files.so $TOOLS/lib && \
+#cp /usr/lib/x86_64-linux-gnu/libnss_dns.so $TOOLS/lib && \
+#cp /usr/lib/x86_64-linux-gnu/libnss_nis.so $TOOLS/lib && \
+#cp /usr/lib/x86_64-linux-gnu/libnss_nisplus.so $TOOLS/lib && \
+#cp /usr/lib/x86_64-linux-gnu/libnss3.so $TOOLS/lib && \
+#cp /usr/lib/x86_64-linux-gnu/libnss_hesiod.so $TOOLS/lib && \
+#cp /usr/lib/x86_64-linux-gnu/libnss_compat.so $TOOLS/lib && \
+#cp /usr/lib/x86_64-linux-gnu/libnssutil3.so $TOOLS/lib && \
+#cp -r /usr/lib/x86_64-linux-gnu/nss $TOOLS/lib
+#
+#RUN \
+#ln -fs $TOOLS/embedded/lib/librpmbuild.so.8.0.1 $TOOLS/ansible_tools_overlay/lib/librpmbuild.so.8.0.1 && \
+#ln -fs $TOOLS/embedded/lib/librpmsign.so.8.0.1 $TOOLS/ansible_tools_overlay/lib/librpmsign.so.8.0.1 && \
+#ln -fs $TOOLS/embedded/lib/librpm.so.8.0.1 $TOOLS/ansible_tools_overlay/lib/librpm.so.8.0.1 && \
+#ln -fs $TOOLS/embedded/lib/librpm.so.8 $TOOLS/ansible_tools_overlay/lib/librpm.so.8 && \
+#ln -fs $TOOLS/embedded/lib/librpmio.so.8 $TOOLS/ansible_tools_overlay/lib/librpmio.so.8 && \
+#ln -fs $TOOLS/embedded/lib/librpmsign.so.8 $TOOLS/ansible_tools_overlay/lib/librpmsign.so.8 && \
+#ln -fs $TOOLS/embedded/lib/librpmio.so.8.0.1 $TOOLS/ansible_tools_overlay/lib/librpmio.so.8.0.1 && \
+#ln -fs $TOOLS/embedded/lib/librpmbuild.so.8 $TOOLS/ansible_tools_overlay/lib/librpmbuild.so.8
 
 # Cleanup stapel: only runtime libs and binaries are needed
 RUN rm -rf \
