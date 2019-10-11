@@ -180,6 +180,8 @@ github.com/flant/helm v0.0.0-20191011080210-ef9e6e322c71 h1:t/slCFm1wEqAnXSkaduK
 github.com/flant/helm v0.0.0-20191011080210-ef9e6e322c71/go.mod h1:FBJB9Ee3D1KsW2Q54spnyJAihmDmnHKRmVyKscC3++Y=
 github.com/flant/helm v0.0.0-20191011090343-5f8018ce7bec h1:TQR8mxcsfgDG7Df/T44uN1GU+26siJFPcl87uBWKm8E=
 github.com/flant/helm v0.0.0-20191011090343-5f8018ce7bec/go.mod h1:FBJB9Ee3D1KsW2Q54spnyJAihmDmnHKRmVyKscC3++Y=
+github.com/flant/helm v0.0.0-20191011111138-a30b0f669012 h1:qa3erwJosERsQMuKH8FpNnoZB6xUvLSYpMWmzimzF5E=
+github.com/flant/helm v0.0.0-20191011111138-a30b0f669012/go.mod h1:FBJB9Ee3D1KsW2Q54spnyJAihmDmnHKRmVyKscC3++Y=
 github.com/flant/kubedog v0.3.5-0.20190923111717-5fda2f77f960 h1:RQaVATHub/MgDkqhQ2Zrsumxi73cyvNQt3bW82HFHx4=
 github.com/flant/kubedog v0.3.5-0.20190923111717-5fda2f77f960/go.mod h1:o9cSuE3Z/kgxKhLCLUGUc9vPOFQgmY0B+7bdOQq++7o=
 github.com/flant/logboek v0.0.0-20190416104940-91fee3a3fc8d/go.mod h1:WirgB39yMTvPGKqrAE3zlsG/02of4rr5lXh1EiwO5P0=
