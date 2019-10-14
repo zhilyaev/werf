@@ -358,8 +358,8 @@ RUN \
 ln -fs $TOOLS/embedded/bin/tar $TOOLS/ansible_tools_overlay/bin/tar && \
 ln -fs $TOOLS/embedded/lib/libapt-private.so.0.0 $TOOLS/ansible_tools_overlay/lib/libapt-private.so.0.0 && \
 ln -fs $TOOLS/embedded/lib/libapt-private.so.0.0 $TOOLS/ansible_tools_overlay/lib/libapt-private.so.0.0.0 && \
-ln -fs $TOOLS/embedded/lib/libapt-pkg.so.5.0 $TOOLS/ansible_tools_overlay/lib/libapt-private.so.5.0 && \
-ln -fs $TOOLS/embedded/lib/libapt-pkg.so.5.0.2 $TOOLS/ansible_tools_overlay/lib/libapt-private.so.5.0.2 && \
+ln -fs $TOOLS/embedded/lib/libapt-pkg.so.5.0 $TOOLS/ansible_tools_overlay/lib/libapt-pkg.so.5.0 && \
+ln -fs $TOOLS/embedded/lib/libapt-pkg.so.5.0.2 $TOOLS/ansible_tools_overlay/lib/libapt-pkg.so.5.0.2 && \
 ln -fs $TOOLS/embedded/lib/libapt-inst.so.2.0 $TOOLS/ansible_tools_overlay/lib/libapt-inst.so.2.0 && \
 ln -fs $TOOLS/embedded/lib/libapt-inst.so.2.0.0 $TOOLS/ansible_tools_overlay/lib/libapt-inst.so.2.0.0
 
@@ -514,7 +514,6 @@ mv /tmp/bin $TOOLS/bin
 FROM scratch as final
 CMD ["no-such-command"]
 ENV TOOLS=/.werf/stapel
-COPY --from=0 $TOOLS/ansible_tools_overlay $TOOLS/ansible_tools_overlay
 COPY --from=0 $TOOLS/libexec $TOOLS/libexec
 COPY --from=0 $TOOLS/x86_64-lfs-linux-gnu $TOOLS/x86_64-lfs-linux-gnu
 COPY --from=0 $TOOLS/sbin $TOOLS/sbin
@@ -530,3 +529,4 @@ COPY --from=0 $TOOLS/embedded/libexec $TOOLS/embedded/libexec
 COPY --from=0 $TOOLS/embedded/sbin $TOOLS/embedded/sbin
 COPY --from=0 $TOOLS/embedded/share $TOOLS/embedded/share
 COPY --from=0 $TOOLS/embedded/ssl $TOOLS/embedded/ssl
+COPY --from=0 $TOOLS/ansible_tools_overlay $TOOLS/ansible_tools_overlay
