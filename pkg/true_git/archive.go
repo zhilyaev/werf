@@ -237,7 +237,7 @@ func gitWorkTreeFilesModes(repoDir, workTreeDir string, withSubmodules bool) (ma
 	var gitLsFilesCommandOutputs []*bytes.Buffer
 
 	execArgs := []string{
-		"git", "--git-dir", repoDir, "--work-tree", workTreeDir,
+		"git", "-c", "core.autocrlf=input", "--git-dir", repoDir, "--work-tree", workTreeDir,
 		"ls-files", "--stage",
 	}
 
@@ -256,7 +256,7 @@ func gitWorkTreeFilesModes(repoDir, workTreeDir string, withSubmodules bool) (ma
 
 	if withSubmodules {
 		execArgs := []string{
-			"git", "--git-dir", repoDir, "--work-tree", workTreeDir,
+			"git", "-c", "core.autocrlf=input", "--git-dir", repoDir, "--work-tree", workTreeDir,
 			"submodule", "foreach", "--recursive", "git", "ls-files", "--stage",
 		}
 
