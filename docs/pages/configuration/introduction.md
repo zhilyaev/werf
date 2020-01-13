@@ -7,12 +7,12 @@ author: Alexey Igrychev <alexey.igrychev@flant.com>, Timofey Kirillov <timofey.k
 
 ## What is werf config?
 
-Application should be configured to use werf. This configuration includes:
+To use werf, you should configure an application accordingly. The configuration involves:
 
-1. Definition of project meta information such as project name, which will affect build, deploy and other commands.
-2. Definition of the images to be built.
+1. Defining project meta-information (such as a project name), which will affect build, deploy, and other commands.
+2. Defining images to be built.
 
-werf uses YAML configuration file `werf.yaml` placed in the root folder of your application. The config is a collection of config sections -- parts of YAML file separated by [three hyphens](http://yaml.org/spec/1.2/spec.html#id2800132):
+werf uses the YAML configuration file `werf.yaml` placed in the root folder of your application. The configuration data itself is a collection of configuration sections -- parts of YAML file separated by [three hyphens](http://yaml.org/spec/1.2/spec.html#id2800132):
 
 ```yaml
 CONFIG_SECTION
@@ -22,11 +22,11 @@ CONFIG_SECTION
 CONFIG_SECTION
 ```
 
-Each config section has a type. There are currently 3 types of config sections:
+Each configuration section has a type. There are currently 3 types of sections:
 
-1. Config section to describe project meta information, which will be referred to as *meta config section*.
-2. Config section to describe image build instructions, which will be referred to as *image config section*.
-3. Config section to describe artifact build instructions, which will be referred to as *artifact config section*.
+1. Config section to describe project meta information. We will refer to it as a *meta config section*.
+2. Config section to describe instructions for building images. We will refer to it as an *image config section*.
+3. Config section to describe instructions for building artifacts. We will refer to it as an *artifact config section*.
 
 More types can be added in the future.
 
@@ -39,19 +39,19 @@ OTHER_FIELDS
 ---
 ```
 
-Config section with the key `project: PROJECT_NAME` and `configVersion: CONFIG_VERSION` is the meta config section. This is required section. There should be only one meta config section in a single `werf.yaml` configuration.
+The section with the key `project: PROJECT_NAME` and `configVersion: CONFIG_VERSION` is the meta config section. This is the obligatory section. There should be only one meta config section in any `werf.yaml` configuration.
 
 #### Project name
 
-`project` defines unique project name of your application. Project name affects build cache image names, Kubernetes Namespace, Helm Release name and other derived names (see [deploy to Kubernetes for detailed description]({{ site.baseurl }}/documentation/reference/deploy_process/deploy_into_kubernetes.html)). This is single required field of meta configuration.
+The `project` key defines the unique project name of your application. Project name affects build cache image names, Kubernetes Namespace, the Helm Release name, and other derived names (see [deploy to Kubernetes]({{ site.baseurl }}/documentation/reference/deploy_process/deploy_into_kubernetes.html)) for detailed description. This is the only required field of meta configuration.
 
-Project name should be unique within group of projects that shares build hosts and deployed into the same Kubernetes cluster (i.e. unique across all groups within the same gitlab).
+The project name should be unique within the group of projects that share build hosts and are deployed into the same Kubernetes cluster (i.e., unique across all groups within the single gitlab).
 
-Project name must be maximum 50 chars, only lowercase alphabetic chars, digits and dashes are allowed.
+The project name can consist of up to 50 characters; only lowercase alphabet letters, numbers, and dashes are allowed.
 
-**WARNING**. You should never change project name, once it has been set up, unless you know what you are doing.
+**WARNING**. You should never change the name of the project once it has been set up (unless you know what you are doing).
 
-Changing project name leads to issues:
+Changing the name of the project leads to several issues:
 1. Invalidation of build cache. New images must be built. Old images must be cleaned up from local host and Docker registry manually.
 2. Creation of completely new Helm Release. So if you already had deployed your application, then changed project name and deployed it again, there will be created another instance of the same application.
 
