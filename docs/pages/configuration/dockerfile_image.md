@@ -58,7 +58,7 @@ dockerfile: dockerfiles/DockerfileFrontend
 
 ## Dockerfile directives
 
-Similarly to Docker, werf builds an image using the Dockerfile and context.
+Similarly to Docker, werf builds an image using the Dockerfile, context and additional options:
 
 - `dockerfile` **(required)**: set the Dockerfile path relative to the project directory.
 - `context`: set the build context PATH inside the project directory (the root of a project - `.` - is selected by default).
