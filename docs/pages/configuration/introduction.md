@@ -39,33 +39,33 @@ OTHER_FIELDS
 ---
 ```
 
-The section with the key `project: PROJECT_NAME` and `configVersion: CONFIG_VERSION` is the meta config section. This is the obligatory section. There should be only one meta config section in any `werf.yaml` configuration.
+The section with the key `project: PROJECT_NAME` and `configVersion: CONFIG_VERSION` is the meta config section. This section is obligatory. There should be only one meta config section in any `werf.yaml` configuration.
 
 #### Project name
 
-The `project` key defines the unique project name of your application. Project name affects build cache image names, Kubernetes Namespace, the Helm Release name, and other derived names (see [deploy to Kubernetes]({{ site.baseurl }}/documentation/reference/deploy_process/deploy_into_kubernetes.html)) for detailed description. This is the only required field of meta configuration.
+The `project` key defines the unique project name of your application. Project name affects build cache image names, Kubernetes Namespace, the Helm Release name, and other derived names (see [deploy to Kubernetes]({{ site.baseurl }}/documentation/reference/deploy_process/deploy_into_kubernetes.html)) for a detailed description. It is the only required field in meta configuration.
 
-The project name should be unique within the group of projects that share build hosts and are deployed into the same Kubernetes cluster (i.e., unique across all groups within the single gitlab).
+The project name should be unique within the group of projects which share build hosts and are deployed into the same Kubernetes cluster (i.e., unique across all groups within the single gitlab).
 
 The project name can consist of up to 50 characters; only lowercase alphabet letters, numbers, and dashes are allowed.
 
 **WARNING**. You should never change the name of the project once it has been set up (unless you know what you are doing).
 
 Changing the name of the project leads to several issues:
-1. Invalidation of build cache. New images must be built. Old images must be cleaned up from local host and Docker registry manually.
-2. Creation of completely new Helm Release. So if you already had deployed your application, then changed project name and deployed it again, there will be created another instance of the same application.
+1. Invalidation of a build cache. In this case, you will have to build new images and manually clean up old images from the localhost and the Docker registry.
+2. Creation of the completely new Helm Release. Suppose that you have deployed an application successfully and later changed the name of the project. In this case, if you will try to deploy it again, the new instance of the same application will be created.
 
-werf cannot automatically resolve project name change. Described issues must be resolved manually.
+werf cannot cope with the change of the project name automatically. You have to resolve the issues described above manually.
 
 #### Config version
 
-The `configVersion` defines a `werf.yaml` format. It should always be `1` for now.
+The `configVersion` defines the format of a `werf.yaml` file. For now, it must be set to `1`.
 
 ### Image config section
 
-Each image config section defines instructions to build one independent docker image. There may be multiple image config sections defined in the same `werf.yaml` config to build multiple images.
+Each image config section contains instructions for building one individual docker image. You can define several image config sections in the single `werf.yaml` configuration file to build multiple images.
 
-Config section with the key `image: IMAGE_NAME` is the image config section. `image` defines short name of the docker image to be built. This name must be unique in a single `werf.yaml` config.
+An image config section starts with the key `image: IMAGE_NAME`. Here, `image` defines the short name of the docker image to be built. This name must be unique in a single `werf.yaml` config.
 
 ```yaml
 image: IMAGE_NAME_1
@@ -86,7 +86,7 @@ Artifact config section also defines instructions to build one independent artif
 
 Config section with the key `artifact: IMAGE_NAME` is the artifact config section. `artifact` defines short name of the artifact to be referred to from another config sections. This name must be unique in a single `werf.yaml` config.
 
-### Minimal config example
+### Minimal configuration example
 
 ```yaml
 project: my-project
@@ -95,9 +95,9 @@ configVersion: 1
 
 ## Organizing configuration
 
-Part of the configuration can be moved in ***separate template files*** and then included into __werf.yaml__. _Template files_ should live in the ***.werf*** directory with **.tmpl** extension (any nesting is supported).
+Part of the configuration can be moved in ***separate template files*** and then included into __werf.yaml__. _Template files_ should reside in the ***.werf*** directory with **.tmpl** extension (any nesting is supported).
 
-> **Tip:** templates can be generated or downloaded before running werf. For example, for sharing common logic between projects
+> **Tip:** templates can be generated or downloaded before running werf. You can use them, for example, for sharing common logic between projects
 
 werf parses all files in one environment, thus described [define](#include) of one _template file_ becomes available in other files, including _werf.yaml_.
 
