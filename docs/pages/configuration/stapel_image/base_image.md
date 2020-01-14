@@ -17,7 +17,7 @@ summary: |
   </div>
 ---
 
-Here's a minimal `werf.yaml`. It describes a _image_ named `example` that is based on a _base image_ named `alpine`:
+Here's an example of the simplest `werf.yaml` file. It describes an _image_ named `example` that is based on the _base image_ named `alpine`:
 
 ```yaml
 project: my-project
@@ -27,21 +27,21 @@ image: example
 from: alpine
 ```
 
-_Base image_ can be declared with `from`, `fromImage` or `fromImageArtifact` directive.
+_Base image_ can be declared by `from`, `fromImage` or `fromImageArtifact` directives.
 
 ## from, fromLatest
 
-The `from` directive defines the name and tag of a _base image_. If absent, tag defaults to `latest`.
+The `from` directive defines the name and tag of a _base image_. If absent, the tag defaults to `latest`.
 
 ```yaml
 from: <image>[:<tag>]
 ```
 
-By default, the assembly process does not depend on actual _base image_ digest in the repository, only on _from_ directive value.
-Thus, changing _base image_ locally or in the repository does not matter if _from_ stage is already exists in _stages storage_.
+By default, an assembly process does not depend on the actual digest of the _base image_ in the repository. It only depends on the value of the _from_ directive.
+Therefore, changing the _base image_ in the local storage or the Docker registry will not affect the build process if the _from_ stage already exists in _stages storage_.
 
-If you want always build the image with actual _base image_ you should use _fromLatest_ directive.
-_fromLatest_ directive allows connecting the assembly process with the _base image_ digest getting from the repository.
+If you prefer to build an image with the current _base image_ only, then you should use the _fromLatest_ directive.
+The _fromLatest_ directive connects an assembly process with a digest of a _base image_, getting it from the repository in the process.
 ```yaml
 fromLatest: true
 ```
@@ -51,7 +51,7 @@ Therefore, using this directive implies not reproducible signatures:
 after changing _base image_ in repository, all previously built stages, also like related images, become not usable.
 The problem might occur:
 - between jobs of one pipeline (e.g. build and deploy) or
-- when you rerun the previous job (e.g. deploy)
+- when you re-run the previous job (e.g. deploy)
 
 ## fromImage and fromImageArtifact
 
