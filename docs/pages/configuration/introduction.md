@@ -65,7 +65,7 @@ The `configVersion` defines the format of a `werf.yaml` file. For now, it must b
 
 Each image config section contains instructions for building one individual docker image. You can define several image config sections in the single `werf.yaml` configuration file to build multiple images.
 
-An image config section starts with the key `image: IMAGE_NAME`. Here, `image` defines the short name of the docker image to be built. This name must be unique in a single `werf.yaml` config.
+An image config section starts with the key `image: IMAGE_NAME`. Here, the `image` defines the short name of the docker image to be built. This name must be unique in a single `werf.yaml` config.
 
 ```yaml
 image: IMAGE_NAME_1
@@ -82,11 +82,11 @@ OTHER_FIELDS
 
 ### Artifact config section
 
-Artifact config section also defines instructions to build one independent artifact docker image. Arifact is a secondary image aimed to isolate a build process and build tools resources (environments, software, data, see [artifacts article for the details]({{ site.baseurl }}/documentation/configuration/stapel_artifact.html)). There may be multiple artifact config sections for multiple artifact config sections defined in the same `werf.yaml` config.
+Each artifact configuration section defines instructions for building one individual artifact docker image. An artifact is a secondary image aimed to isolate the building process and resources of building tools (environments, software, data, see the [artifacts article for details]({{ site.baseurl }}/documentation/configuration/stapel_artifact.html)). The single `werf.yaml` configuration file can have several artifact config sections for defining multiple artifact images.
 
-Config section with the key `artifact: IMAGE_NAME` is the artifact config section. `artifact` defines short name of the artifact to be referred to from another config sections. This name must be unique in a single `werf.yaml` config.
+The artifact config section starts with the key `artifact: IMAGE_NAME`. Here, the `artifact` defines the short name of the artifact you can refer to from other parts of the configuration file. This name must be unique in a single `werf.yaml` config.
 
-### Minimal configuration example
+### Minimum configuration example
 
 ```yaml
 project: my-project
@@ -95,11 +95,11 @@ configVersion: 1
 
 ## Organizing configuration
 
-Part of the configuration can be moved in ***separate template files*** and then included into __werf.yaml__. _Template files_ should reside in the ***.werf*** directory with **.tmpl** extension (any nesting is supported).
+Parts of the configuration can be put into ***separate template files*** and then included in the __werf.yaml__. _Template files_ should reside in the ***.werf*** directory and must have the **.tmpl** extension (any nesting is supported).
 
-> **Tip:** templates can be generated or downloaded before running werf. You can use them, for example, for sharing common logic between projects
+> **Tip:** Templates can be generated or downloaded before running werf. You can use them, for example, for sharing common logic between projects
 
-werf parses all files in one environment, thus described [define](#include) of one _template file_ becomes available in other files, including _werf.yaml_.
+werf parses all files within the single environment. Thus, the described [define](#include) snippet of some _template file_ becomes available to other files, including _werf.yaml_.
 
 <div class="details active">
 <a href="javascript:void(0)" class="details__summary">werf.yaml</a>
@@ -190,9 +190,9 @@ ansible:
 </div>
 </div>
 
-> If there are templates with the same name werf will use template defined in _werf.yaml_ or the latest described in _templates files_
+> If there are templates with the same name, werf will use template defined in the _werf.yaml_ or the most recent template described in _templates files_
 
-If need to use the whole _template file_, use template file path relative to _.werf_ directory as a template name in [include](#include) function.
+If you need to use the whole _template file_, the template file path must be specified relative to the _.werf_ directory as a template name in the [include](#include) function.
 
 <div class="details active">
 <a href="javascript:void(0)" class="details__summary">werf.yaml</a>
@@ -275,21 +275,21 @@ shell:
 </div>
 </div>
 
-## Processing of config
+## Processing configuration
 
-The following steps could describe the processing of a YAML configuration file:
-1. Reading `werf.yaml` and extra templates from `.werf` directory.
+The following steps describe the processing of a YAML configuration file:
+1. Reading the `werf.yaml` file and additional templates from the `.werf` directory.
 2. Executing Go templates.
-3. Saving dump into `.werf.render.yaml` (this file remains after the command execution and will be removed automatically with GC procedure).
-4. Splitting rendered YAML file into separate config sections (part of YAML stream separated by three hyphens, https://yaml.org/spec/1.2/spec.html#id2800132).
+3. Saving the dump into the `.werf.render.yaml` (this file remains after the command is executed and will be removed automatically with the GC procedure).
+4. Splitting the rendered YAML file into separate config sections (part of the YAML stream separated by three hyphens, https://yaml.org/spec/1.2/spec.html#id2800132).
 5. Validating each config section:
-  * Validating YAML syntax (you could read YAML reference [here](http://yaml.org/refcard.html)).
+  * Validating YAML syntax (the YAML reference is available [here](http://yaml.org/refcard.html)).
   * Validating werf syntax.
 6. Generating a set of images.
 
 ### Go templates
 
-Go templates are available within YAML configuration. The following functions are supported:
+Go templates are available within the YAML configuration. The following functions are supported:
 
 * [Built-in Go template functions](https://golang.org/pkg/text/template/#hdr-Functions) and other language features. E.g. using common variable:<a id="go-templates" href="#go-templates" class="anchorjs-link " aria-label="Anchor link for: go templates" data-anchorjs-icon=""></a>
 
