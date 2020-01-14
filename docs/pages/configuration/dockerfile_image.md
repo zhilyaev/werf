@@ -19,8 +19,8 @@ summary: |
   </code></pre></div></div>
 ---
 
-Building image from Dockerfile is the easiest way to start using werf in an existing project.
-Minimal `werf.yaml` below describes an image named `example` related with a project `Dockerfile`:
+Building an image using the existing Dockerfile is the easiest way to start using werf in an existing project.
+Presented below is an elementary `werf.yaml` configuration file. It describes an image named `example` that relates to a project called `Dockerfile`:
 
 ```yaml
 project: my-project
@@ -30,7 +30,7 @@ image: example
 dockerfile: Dockerfile
 ```
 
-To specify some images from one Dockerfile:
+Here is how to specify several images from one Dockerfile:
 
 ```yaml
 image: backend
@@ -42,7 +42,7 @@ dockerfile: Dockerfile
 target: frontend
 ```
 
-And also from different Dockerfiles:
+The same as above but with different Dockerfiles:
 
 ```yaml
 image: backend
@@ -58,10 +58,10 @@ dockerfile: dockerfiles/DockerfileFrontend
 
 ## Dockerfile directives
 
-werf as well as Docker builds the image based on a Dockerfile and a context.
+Similarly to Docker, werf builds an image using the Dockerfile and context.
 
-- `dockerfile` **(required)**: to set Dockerfile path relative to the project directory.
-- `context`: to set build context PATH inside project directory (defaults to root of a project, `.`).
-- `target`: to link specific Dockerfile stage (last one by default, see `docker build` \-\-target option).
-- `args`: to set build-time variables (see `docker build` \-\-build-arg option).
-- `addHost`: to add a custom host-to-IP mapping (host:ip) (see `docker build` \-\-add-host option).
+- `dockerfile` **(required)**: set the Dockerfile path relative to the project directory.
+- `context`: set the build context PATH inside the project directory (the root of a project - `.` - is selected by default).
+- `target`: link specific Dockerfile stage (by default, the most recent one is used, see the `docker build` \-\-target option).
+- `args`: set build-time variables (see the `docker build` \-\-build-arg option).
+- `addHost`: add a custom host-to-IP mapping (host:ip) (see the `docker build` \-\-add-host option).
