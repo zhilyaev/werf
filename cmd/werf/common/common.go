@@ -77,6 +77,8 @@ type CmdData struct {
 
 	Debug            *bool
 	LogPretty        *bool
+	Verbose          *bool
+	Quiet            *bool
 	LogColorMode     *string
 	LogProjectDir    *bool
 	LogTerminalWidth *int64
@@ -368,6 +370,8 @@ func SetupDockerConfig(cmdData *CmdData, cmd *cobra.Command, extraDesc string) {
 
 func SetupLogOptions(cmdData *CmdData, cmd *cobra.Command) {
 	SetupDebug(cmdData, cmd)
+	SetupVerbose(cmdData, cmd)
+	SetupQuiet(cmdData, cmd)
 	SetupLogColor(cmdData, cmd)
 	SetupLogPretty(cmdData, cmd)
 	SetupTerminalWidth(cmdData, cmd)
@@ -375,7 +379,7 @@ func SetupLogOptions(cmdData *CmdData, cmd *cobra.Command) {
 
 func SetupDebug(cmdData *CmdData, cmd *cobra.Command) {
 	cmdData.Debug = new(bool)
-	cmd.Flags().BoolVarP(cmdData.Debug, "debug", "", GetBoolEnvironment("WERF_DEBUG"), "Enable debug output.")
+	cmd.Flags().BoolVarP(cmdData.Debug, "debug", "", GetBoolEnvironment("WERF_DEBUG"), "Enable debug (default $WERF_DEBUG).")
 }
 
 func SetupLogColor(cmdData *CmdData, cmd *cobra.Command) {
@@ -391,6 +395,16 @@ func SetupLogColor(cmdData *CmdData, cmd *cobra.Command) {
 	cmd.Flags().StringVarP(cmdData.LogColorMode, "log-color-mode", "", defaultValue, `Set log color mode.
 Supported on, off and auto (based on the stdout’s file descriptor referring to a terminal) modes.
 Default $WERF_LOG_COLOR_MODE or auto mode.`)
+}
+
+func SetupQuiet(cmdData *CmdData, cmd *cobra.Command) {
+	cmdData.Quiet = new(bool)
+	cmd.Flags().BoolVarP(cmdData.Quiet, "quiet", "", GetBoolEnvironment("WERF_QUIET"), `Disable explanatory output (default $WERF_QUIET).`)
+}
+
+func SetupVerbose(cmdData *CmdData, cmd *cobra.Command) {
+	cmdData.Verbose = new(bool)
+	cmd.Flags().BoolVarP(cmdData.Verbose, "verbose", "", GetBoolEnvironment("WERF_VERBOSE"), `Enable verbose output (default $WERF_VERBOSE).`)
 }
 
 func SetupLogPretty(cmdData *CmdData, cmd *cobra.Command) {
@@ -790,12 +804,12 @@ func ProcessLogOptions(cmdData *CmdData) error {
 		return err
 	}
 
-	if *cmdData.Debug {
+	if *cmdData.Quiet {
+		logging.EnableLogQuiet()
+	} else if *cmdData.Debug {
 		logging.EnableDebug()
-	}
-
-	if !*cmdData.LogPretty {
-		logging.DisablePrettyLog()
+	} else if *cmdData.Verbose {
+		logging.EnableLogVerbose()
 	}
 
 	if err := ProcessLogTerminalWidth(cmdData); err != nil {
