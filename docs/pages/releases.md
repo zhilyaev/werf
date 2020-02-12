@@ -20,7 +20,7 @@ layout: default
     Each werf release progresses through all release channels, starting with Alpha → Beta → Early-Access → Stable → Rock-Solid. You can think of each release on a lower channel as a release-candidate for the higher one. Once a release is considered bug-free, it is promoted to the next channel.
 </div>
 
-{%- assign groups = site.data.releases_history.history | map: "group" | uniq %}
+{%- assign groups = site.data.releases_history.history | map: "group" | uniq | reverse %}
 {%- assign channels_sorted = site.data.channels_info.channels | sort: "stability" %}
 {%- assign channels_sorted_reverse = site.data.channels_info.channels | sort: "stability" | reverse  %}
 
@@ -50,68 +50,102 @@ layout: default
 {%- endfor %}
 </div>
 
-<div class="releases__block-title">Releases: 
-    {%- for group in groups %}
-    <a href="javascript:void(0)" class="tabs__btn tabs__group__btn{% if group == groups[0] %} active{% endif %}" onclick="openTab(event, 'tabs__group__btn', 'tabs__group__content', 'group-{{group}}')">{{group}}</a>
-    {%- endfor %}
+<div class="tabs releases__block-title">Update channels:&nbsp;
+  {%- for channel in channels_sorted_reverse %}
+  <a href="javascript:void(0)" class="tabs__btn tabs__channel__btn{% if channel == channels_sorted_reverse[0] %} active{% endif %}" onclick="openTab(event, 'tabs__channel__btn', 'tabs__channel__content', 'id-{{channel.name}}')">{{channel.title}}</a>
+  {%- endfor %}
+  <a href="javascript:void(0)" class="tabs__btn tabs__channel__btn" onclick="openTab(event, 'tabs__channel__btn', 'tabs__channel__content', 'id-all-channels')">All channels</a>
 </div>
 
-{%- for group in groups %}
-
-<div id="group-{{group}}" class="releases tabs__group__content{% if group == groups[0] %} active{% endif %}">
-    <div class="tabs">
-    {%- for channel in channels_sorted_reverse %}
-    <a href="javascript:void(0)" class="tabs__btn tabs__{{group}}__channel__btn{% if channel == channels_sorted_reverse[1] %} active{% endif %}" onclick="openTab(event, 'tabs__{{group}}__channel__btn', 'tabs__{{group}}__channel__content', 'id-{{group}}-{{channel.name}}')">{{channel.title}}</a>
+{%- for channel in channels_sorted_reverse %}
+<div id="id-{{channel.name}}" class="releases tabs__channel__content{% if channel == channels_sorted_reverse[0] %} active{% endif %}">
+    <div class="tabs">Releases:&nbsp;
+    {%- assign not_activated = true %}
+    {%- for group in groups %}
+      {%- assign group_activity = site.data.releases_history.history | reverse | where: "group", group | where: "name", channel.name | size %}
+      {%- if group_activity < 1 %}
+        {% continue %} 
+      {% endif %}
+      <a href="javascript:void(0)" class="tabs__btn tabs__{{channel.name}}__btn{%- if group_activity > 0 and not_activated %} active{% endif %}" 
+         onclick="openTab(event, 'tabs__{{channel.name}}__btn', 'tabs__{{channel.name}}__content', 'id-{{group}}-{{ channel.name }}')">{{group}}</a>
+         {%- if group_activity > 0 and not_activated %}
+         {%- assign not_activated = false %}
+         {%- endif %}
     {%- endfor %}
-    <a href="javascript:void(0)" class="tabs__btn tabs__{{group}}__channel__btn" onclick="openTab(event, 'tabs__{{group}}__channel__btn', 'tabs__{{group}}__channel__content', 'id-{{group}}-all')">All channels</a>
     </div>
-
-    {%- for channel in channels_sorted_reverse %}
-    <div id="id-{{group}}-{{ channel.name }}" class="tabs__content tabs__{{group}}__channel__content{% if channel == channels_sorted_reverse[1] %} active{% endif %}">
+    
     <div class="releases__info">
         <p>{{ channel.tooltip[page.lang] }}</p>
         <p class="releases__info-text">{{ channel.description[page.lang] }}</p>
     </div>
-
-    {%- assign group_history = site.data.releases_history.history | reverse | where: "group", group %}
-    {%- assign channel_history = group_history | where: "name", channel.name %}
-
-    {%- if channel_history.size > 0 %}
-        {%- for channel_action in channel_history %}
-           {%- assign release = site.data.releases.releases | where: "tag_name", channel_action.version | first %}
-            <div class="releases__title">
-                <a href="{{ release.html_url }}">
-                    {{ release.tag_name }}
-                </a>
+    {%- assign not_activated = true %}
+    {%- for group in groups %}
+      {%- assign group_activity = site.data.releases_history.history | reverse | where: "group", group | where: "name", channel.name | size %}
+      {%- if group_activity < 1 %}
+        {% continue %} 
+      {% endif %}
+      <div id="id-{{group}}-{{ channel.name }}" class="tabs__content tabs__{{channel.name}}__content{%- if group_activity > 0 and not_activated %} active{% endif %}">
+        
+        {%- assign group_history = site.data.releases_history.history | reverse | where: "group", group %}
+        {%- assign channel_history = group_history | where: "name", channel.name %}
+        
+        {%- if channel_history.size > 0 %}
+            {%- for channel_action in channel_history %}
+               {%- assign release = site.data.releases.releases | where: "tag_name", channel_action.version | first %}
+                <div class="releases__title">
+                    <a href="{{ release.html_url }}">
+                        {{ release.tag_name }}
+                    </a>
+                </div>
+                <div class="releases__body">
+                    {{ release.body | markdownify }}
+                </div>
+            {%- endfor %}
+        {%- else %}
+            <div class="releases__info releases__info_notification">
+                <p>There are no versions on the channel yet, but they will appear soon.</p>
             </div>
-            <div class="releases__body">
-                {{ release.body | markdownify }}
-            </div>
-        {%- endfor %}
-    {%- else %}
-        <div class="releases__info releases__info_notification">
-            <p>There are no versions on the channel yet, but they will appear soon.</p>
-        </div>
-    {%- endif %}
+        {%- endif %}
+        
+      </div>
+      {%- if group_activity > 0 and not_activated %}
+      {%- assign not_activated = false %}
+      {%- endif %}
 
-    </div>
     {%- endfor %}
-
-    <div id="id-{{group}}-all" class="tabs__content tabs__{{group}}__channel__content">
-        <div class="releases__info">
-            <p>This is a list of all of the releases (Alpha, Beta, Early-Access, Stable and Rock-Solid) combined in chronological order.</p>
-        </div>
-    {%- for release_data in group_history %}
-            {%- assign release = site.data.releases.releases | where: "tag_name", release_data.version | first %}
-            <div class="releases__title">
-                <a href="{{ release.html_url }}">
-                    {{ release.tag_name }}
-                </a>
-            </div>
-            <div class="releases__body">
-                {{ release.body | markdownify }}
-            </div>
-    {%- endfor %}
-    </div>
 </div>
 {%- endfor %}
+
+<div id="id-all-channels" class="releases tabs__content tabs__channel__content">
+    <div class="tabs">Releases:&nbsp;
+    {%- for group in groups %}
+    {%- assign group_activity = site.data.releases_history.history | reverse | where: "group", group | where: "name", channel.name | size %}
+    <a href="javascript:void(0)" class="tabs__btn tabs__all-channel__btn{% if group == groups[0] %} active{% endif %}
+             {%- if group_activity < 1 %} tabs__btn__empty{% endif %}" 
+             onclick="openTab(event, 'tabs__all-channel__btn', 'tabs__all-channel__content', 'id-{{group}}-all-channel')">{{group}}</a>
+    {%- endfor %}
+    </div>
+
+    <div class="releases__info">
+        <p>This is a list of all of the channel versions combined in chronological order.</p>
+    </div>
+
+    {%- for group in groups %}
+      <div id="id-{{group}}-all-channel" class="tabs__content tabs__all-channel__content{% if group == groups[0] %} active{% endif %}">
+
+      {%- assign group_history = site.data.releases_history.history | reverse | where: "group", group %}
+
+      {%- for release_data in group_history %}
+              {%- assign release = site.data.releases.releases | where: "tag_name", release_data.version | first %}
+              <div class="releases__title">
+                  <a href="{{ release.html_url }}">
+                      {{ release.tag_name }}
+                  </a>
+              </div>
+              <div class="releases__body">
+                  {{ release.body | markdownify }}
+              </div>
+      {%- endfor %}
+      </div>
+    {%- endfor %}
+</div>
