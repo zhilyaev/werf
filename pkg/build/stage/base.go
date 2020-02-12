@@ -123,7 +123,7 @@ func (s *BaseStage) getNextStageGitDependencies(_ Conveyor) (string, error) {
 		}
 	}
 
-	logboek.LogDebugF("Stage %s next stage dependencies: %v\n", s.Name(), args)
+	logboek.LogF("Stage %s next stage dependencies: %v\n", s.Name(), args, logboek.DebugLevel)
 	sort.Strings(args)
 
 	return util.Sha256Hash(args...), nil
@@ -185,12 +185,12 @@ ScanImages:
 				}
 
 				if !isOurAncestor {
-					logboek.LogDebugF("%s is not ancestor of %s for git repo %s: ignore image %s\n", commit, currentCommit, gitMapping.GitRepo().String(), img.ImageName)
+					logboek.LogF("%s is not ancestor of %s for git repo %s: ignore image %s\n", commit, currentCommit, gitMapping.GitRepo().String(), img.ImageName, logboek.DebugLevel)
 					continue ScanImages
 				}
-				logboek.LogDebugF("%s is ancestor of %s for git repo %s: image %s is suitable for git archive stage\n", commit, currentCommit, gitMapping.GitRepo().String(), img.ImageName)
+				logboek.LogF("%s is ancestor of %s for git repo %s: image %s is suitable for git archive stage\n", commit, currentCommit, gitMapping.GitRepo().String(), img.ImageName, logboek.DebugLevel)
 			} else {
-				logboek.LogDebugF("WARNING: No git commit found in image %s, skipping\n", img.ImageName)
+				logboek.LogF("WARNING: No git commit found in image %s, skipping\n", img.ImageName, logboek.DebugLevel)
 				continue ScanImages
 			}
 		}
