@@ -70,6 +70,9 @@ werf helm render [options]
       --set-string=[]:
             Set STRING helm values on the command line (can specify multiple or separate values     
             with commas: key1=val1,key2=val2)
+      --tag-by-signatures=false:
+            Use signature tagging strategy and tag each image by the corresponding signature of     
+            last image stage (option can be enabled by specifying $WERF_TAG_BY_SIGNATURES=true)
       --tag-custom=[]:
             Use custom tagging strategy and tag by the specified arbitrary tags.
             Option can be used multiple times to produce multiple images with the specified tags.

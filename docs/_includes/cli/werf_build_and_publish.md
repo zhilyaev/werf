@@ -53,7 +53,7 @@ werf build-and-publish [IMAGE_NAME...] [options]
 
 ```shell
       --debug=false:
-            Enable debug output.
+            Enable debug (default $WERF_DEBUG).
       --dir='':
             Change to the specified directory to find werf.yaml config
       --docker-config='':
@@ -107,6 +107,8 @@ werf build-and-publish [IMAGE_NAME...] [options]
             Defaults to:
             * $WERF_LOG_TERMINAL_WIDTH
             * interactive terminal width or 140
+      --quiet=false:
+            Disable explanatory output (default $WERF_QUIET).
       --skip-tls-verify-registry=false:
             Skip TLS certificate validation when accessing a registry (default                      
             $WERF_SKIP_TLS_VERIFY_REGISTRY)
@@ -123,6 +125,9 @@ werf build-and-publish [IMAGE_NAME...] [options]
             :local or $WERF_STAGES_STORAGE if set). The same lock address should be specified for   
             all werf processes that work with a single stages storage. :local address allows only   
             execution of werf processes from a single host.
+      --tag-by-signatures=false:
+            Use signature tagging strategy and tag each image by the corresponding signature of     
+            last image stage (option can be enabled by specifying $WERF_TAG_BY_SIGNATURES=true)
       --tag-custom=[]:
             Use custom tagging strategy and tag by the specified arbitrary tags.
             Option can be used multiple times to produce multiple images with the specified tags.
@@ -139,5 +144,7 @@ werf build-and-publish [IMAGE_NAME...] [options]
             specifying git tag in the $WERF_TAG_GIT_TAG)
       --tmp-dir='':
             Use specified dir to store tmp files and dirs (default $WERF_TMP_DIR or system tmp dir)
+      --verbose=false:
+            Enable verbose output (default $WERF_VERBOSE).
 ```
 

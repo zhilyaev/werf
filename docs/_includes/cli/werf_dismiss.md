@@ -36,7 +36,7 @@ werf dismiss [options]
 
 ```shell
       --debug=false:
-            Enable debug output.
+            Enable debug (default $WERF_DEBUG).
       --dir='':
             Change to the specified directory to find werf.yaml config
       --docker-config='':
@@ -76,6 +76,8 @@ werf dismiss [options]
       --namespace='':
             Use specified Kubernetes namespace (default [[ project ]]-[[ env ]] template or         
             deploy.namespace custom template from werf.yaml)
+      --quiet=false:
+            Disable explanatory output (default $WERF_QUIET).
       --release='':
             Use specified Helm release name (default [[ project ]]-[[ env ]] template or            
             deploy.helmRelease custom template from werf.yaml)
@@ -84,6 +86,8 @@ werf dismiss [options]
             $WERF_RELEASES_HISTORY_MAX. By default werf keeps all releases.
       --tmp-dir='':
             Use specified dir to store tmp files and dirs (default $WERF_TMP_DIR or system tmp dir)
+      --verbose=false:
+            Enable verbose output (default $WERF_VERBOSE).
       --with-hooks=true:
             Delete Helm Release hooks getting from existing revisions
       --with-namespace=false:

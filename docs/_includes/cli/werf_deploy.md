@@ -61,7 +61,7 @@ werf deploy [options]
             Also can be specified in $WERF_ADD_LABEL* (e.g.                                         
             $WERF_ADD_LABEL_1=labelName1=labelValue1", $WERF_ADD_LABEL_2=labelName2=labelValue2")
       --debug=false:
-            Enable debug output.
+            Enable debug (default $WERF_DEBUG).
       --dir='':
             Change to the specified directory to find werf.yaml config
       --docker-config='':
@@ -115,6 +115,8 @@ werf deploy [options]
       --namespace='':
             Use specified Kubernetes namespace (default [[ project ]]-[[ env ]] template or         
             deploy.namespace custom template from werf.yaml)
+      --quiet=false:
+            Disable explanatory output (default $WERF_QUIET).
       --release='':
             Use specified Helm release name (default [[ project ]]-[[ env ]] template or            
             deploy.helmRelease custom template from werf.yaml)
@@ -148,6 +150,9 @@ werf deploy [options]
       --status-progress-period=5:
             Status progress period in seconds. Set -1 to stop showing status progress. Defaults to  
             $WERF_STATUS_PROGRESS_PERIOD_SECONDS or 5 seconds
+      --tag-by-signatures=false:
+            Use signature tagging strategy and tag each image by the corresponding signature of     
+            last image stage (option can be enabled by specifying $WERF_TAG_BY_SIGNATURES=true)
       --tag-custom=[]:
             Use custom tagging strategy and tag by the specified arbitrary tags.
             Option can be used multiple times to produce multiple images with the specified tags.
@@ -172,5 +177,7 @@ werf deploy [options]
             Use specified dir to store tmp files and dirs (default $WERF_TMP_DIR or system tmp dir)
       --values=[]:
             Specify helm values in a YAML file or a URL (can specify multiple)
+      --verbose=false:
+            Enable verbose output (default $WERF_VERBOSE).
 ```
 

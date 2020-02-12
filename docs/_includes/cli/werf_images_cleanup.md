@@ -15,7 +15,7 @@ werf images cleanup [options]
 
 ```shell
       --debug=false:
-            Enable debug output.
+            Enable debug (default $WERF_DEBUG).
       --dir='':
             Change to the specified directory to find werf.yaml config
       --docker-config='':
@@ -72,11 +72,15 @@ werf images cleanup [options]
             Defaults to:
             * $WERF_LOG_TERMINAL_WIDTH
             * interactive terminal width or 140
+      --quiet=false:
+            Disable explanatory output (default $WERF_QUIET).
       --skip-tls-verify-registry=false:
             Skip TLS certificate validation when accessing a registry (default                      
             $WERF_SKIP_TLS_VERIFY_REGISTRY)
       --tmp-dir='':
             Use specified dir to store tmp files and dirs (default $WERF_TMP_DIR or system tmp dir)
+      --verbose=false:
+            Enable verbose output (default $WERF_VERBOSE).
       --without-kube=false:
             Do not skip deployed Kubernetes images (default $WERF_KUBE_CONTEXT)
 ```

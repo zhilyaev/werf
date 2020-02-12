@@ -32,7 +32,7 @@ werf helm deploy-chart CHART_DIR|CHART_REFERENCE RELEASE_NAME [options]
             identify HTTPS client using this SSL certificate file (if using CHART as a chart        
             reference)
       --debug=false:
-            Enable debug output.
+            Enable debug (default $WERF_DEBUG).
       --devel=false:
             use development versions, too. Equivalent to version '>0.0.0-0'. If --version is set,   
             this is ignored (if using CHART as a chart reference)
@@ -81,6 +81,8 @@ werf helm deploy-chart CHART_DIR|CHART_REFERENCE RELEASE_NAME [options]
       --prov=false:
             fetch the provenance file, but don't perform verification (if using CHART as a chart    
             reference)
+      --quiet=false:
+            Disable explanatory output (default $WERF_QUIET).
       --repo='':
             chart repository url where to locate the requested chart (if using CHART as a chart     
             reference)
@@ -105,6 +107,8 @@ werf helm deploy-chart CHART_DIR|CHART_REFERENCE RELEASE_NAME [options]
             chart repository username (if using CHART as a chart reference)
       --values=[]:
             Specify helm values in a YAML file or a URL (can specify multiple)
+      --verbose=false:
+            Enable verbose output (default $WERF_VERBOSE).
       --verify=false:
             verify the package against its signature (if using CHART as a chart reference)
       --version='':

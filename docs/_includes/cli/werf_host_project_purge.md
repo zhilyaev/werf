@@ -15,7 +15,7 @@ werf host project purge [PROJECT_NAME ...] [options]
 
 ```shell
       --debug=false:
-            Enable debug output.
+            Enable debug (default $WERF_DEBUG).
       --dir='':
             Change to the specified directory to find werf.yaml config
       --docker-config='':
@@ -44,6 +44,8 @@ werf host project purge [PROJECT_NAME ...] [options]
             Defaults to:
             * $WERF_LOG_TERMINAL_WIDTH
             * interactive terminal width or 140
+      --quiet=false:
+            Disable explanatory output (default $WERF_QUIET).
   -s, --stages-storage='':
             Docker Repo to store stages or :local for non-distributed build (only :local is         
             supported for now; default $WERF_STAGES_STORAGE environment).
@@ -55,5 +57,7 @@ werf host project purge [PROJECT_NAME ...] [options]
             execution of werf processes from a single host.
       --tmp-dir='':
             Use specified dir to store tmp files and dirs (default $WERF_TMP_DIR or system tmp dir)
+      --verbose=false:
+            Enable verbose output (default $WERF_VERBOSE).
 ```
 

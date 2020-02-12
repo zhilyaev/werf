@@ -35,7 +35,7 @@ werf helm secret rotate-secret-key [EXTRA_SECRET_VALUES_FILE_PATH...] [options]
 
 ```shell
       --debug=false:
-            Enable debug output.
+            Enable debug (default $WERF_DEBUG).
       --dir='':
             Change to the specified directory to find werf.yaml config
   -h, --help=false:
@@ -55,7 +55,11 @@ werf helm secret rotate-secret-key [EXTRA_SECRET_VALUES_FILE_PATH...] [options]
             Defaults to:
             * $WERF_LOG_TERMINAL_WIDTH
             * interactive terminal width or 140
+      --quiet=false:
+            Disable explanatory output (default $WERF_QUIET).
       --tmp-dir='':
             Use specified dir to store tmp files and dirs (default $WERF_TMP_DIR or system tmp dir)
+      --verbose=false:
+            Enable verbose output (default $WERF_VERBOSE).
 ```
 

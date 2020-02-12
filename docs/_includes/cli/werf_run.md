@@ -34,7 +34,7 @@ werf run [options] [IMAGE_NAME] [-- COMMAND ARG...]
       --bash=false:
             Use predefined docker options and command for debug
       --debug=false:
-            Enable debug output.
+            Enable debug (default $WERF_DEBUG).
       --dir='':
             Change to the specified directory to find werf.yaml config
       --docker-config='':
@@ -67,6 +67,8 @@ werf run [options] [IMAGE_NAME] [-- COMMAND ARG...]
             Defaults to:
             * $WERF_LOG_TERMINAL_WIDTH
             * interactive terminal width or 140
+      --quiet=false:
+            Disable explanatory output (default $WERF_QUIET).
       --shell=false:
             Use predefined docker options and command for debug
       --skip-tls-verify-registry=false:
@@ -87,5 +89,7 @@ werf run [options] [IMAGE_NAME] [-- COMMAND ARG...]
             execution of werf processes from a single host.
       --tmp-dir='':
             Use specified dir to store tmp files and dirs (default $WERF_TMP_DIR or system tmp dir)
+      --verbose=false:
+            Enable verbose output (default $WERF_VERBOSE).
 ```
 
