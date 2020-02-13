@@ -51,7 +51,7 @@ layout: default
 </div>
 
 <div class="releases__block-title">
-    Релизы
+    История смены версий
 </div>
 
 <div class="releases">
@@ -70,7 +70,7 @@ layout: default
 {%- for channel in channels_sorted_reverse %}
 <div id="id-{{channel.name}}" class="tabs__channel__content{% if channel == channels_sorted_reverse[0] %} active{% endif %}">
     <div class="releases__block-subtitle">
-        Версия:
+        Релиз:
     </div>
     <div class="tabs">
     {%- assign not_activated = true %}
